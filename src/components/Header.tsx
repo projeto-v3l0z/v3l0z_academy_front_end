@@ -7,7 +7,7 @@ import { Fade, Flex, Line, ToggleButton } from "@/once-ui/components";
 import styles from "@/components/Header.module.scss";
 
 import { routes, display } from "@/app/resources";
-import { person, home, about, blog, work, gallery } from "@/app/resources/content";
+import { person, home, about, blog, courses, gallery } from "@/app/resources/content";
 
 type TimeDisplayProps = {
   timeZone: string;
@@ -92,20 +92,20 @@ export const Header = () => {
                   />
                 </>
               )}
-              {routes["/work"] && (
+              {routes["/courses"] && (
                 <>
                   <ToggleButton
                     className="s-flex-hide"
                     prefixIcon="grid"
-                    href="/work"
-                    label={work.label}
-                    selected={pathname.startsWith("/work")}
+                    href="/courses"
+                    label={courses.label}
+                    selected={pathname.startsWith("/courses")}
                   />
                   <ToggleButton
                     className="s-flex-show"
                     prefixIcon="grid"
-                    href="/work"
-                    selected={pathname.startsWith("/work")}
+                    href="/courses"
+                    selected={pathname.startsWith("/courses")}
                   />
                 </>
               )}
@@ -140,6 +140,23 @@ export const Header = () => {
                     prefixIcon="gallery"
                     href="/gallery"
                     selected={pathname.startsWith("/gallery")}
+                  />
+                </>
+              )}
+              {routes["/login"] && (
+                <>
+                  <ToggleButton
+                    className="s-flex-hide"
+                    prefixIcon="lock"
+                    href="/login"
+                    label={home.label}
+                    selected={pathname === "/login"}
+                  />
+                  <ToggleButton
+                    className="s-flex-show"
+                    prefixIcon="lock"
+                    href="/login"
+                    selected={pathname === "/login"}
                   />
                 </>
               )}

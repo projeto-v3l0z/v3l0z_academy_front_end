@@ -1,15 +1,15 @@
 import { InlineCode } from "@/once-ui/components";
 
 const person = {
-  firstName: "Selene",
-  lastName: "Yu",
+  firstName: "V3L0Z",
+  lastName: "academy",
   get name() {
     return `${this.firstName} ${this.lastName}`;
   },
-  role: "Design Engineer",
+  role: "Formador de desenvolvedores",
   avatar: "/images/avatar.jpg",
-  location: "Asia/Jakarta", // Expecting the IANA time zone identifier, e.g., 'Europe/Vienna'
-  languages: ["English", "Bahasa"], // optional: Leave the array empty if you don't want to display languages
+  location: "America/belem",
+  languages: ["English", "Portuguese"], 
 };
 
 const newsletter = {
@@ -24,8 +24,6 @@ const newsletter = {
 };
 
 const social = [
-  // Links are automatically displayed.
-  // Import new icons in /once-ui/icons.ts
   {
     name: "GitHub",
     icon: "github",
@@ -50,7 +48,7 @@ const social = [
 
 const home = {
   label: "Home",
-  title: `${person.name}'s Portfolio`,
+  title: `${person.name}`,
   description: `Portfolio website showcasing my work as a ${person.role}`,
   headline: <>Design engineer and builder</>,
   subline: (
@@ -191,16 +189,12 @@ const blog = {
   label: "Blog",
   title: "Writing about design and tech...",
   description: `Read what ${person.name} has been up to recently`,
-  // Create new blog posts by adding a new .mdx file to app/blog/posts
-  // All posts will be listed on the /blog route
 };
 
-const work = {
-  label: "Work",
-  title: "My projects",
-  description: `Design and dev projects by ${person.name}`,
-  // Create new project pages by adding a new .mdx file to app/blog/posts
-  // All projects will be listed on the /home and /work routes
+const courses = {
+  label: "Cursos",
+  title: "Cursos",
+  description: `Diversos cursos em diferentes áreas da tecnologia`,
 };
 
 const gallery = {
@@ -282,4 +276,4 @@ const gallery = {
   ],
 };
 
-export { person, social, newsletter, home, about, blog, work, gallery };
+export { person, social, newsletter, home, about, blog, courses, gallery };

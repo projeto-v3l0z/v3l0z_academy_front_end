@@ -1,11 +1,12 @@
-const baseURL = "demo.magic-portfolio.com";
+const baseURL = "http://127.0.0.1:8000/";
 
 const routes = {
   "/": true,
   "/about": true,
-  "/work": true,
+  "/courses": true,
   "/blog": true,
   "/gallery": true,
+  "/login": true,
 };
 
 // Enable password protection on selected routes
