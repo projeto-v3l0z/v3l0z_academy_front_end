@@ -1,32 +1,13 @@
+// src/routes.js
 import { Home, Profile, SignIn, SignUp } from "@/pages";
+import CoursesPage from "./pages/courses";
 
 export const routes = [
-  {
-    name: "home",
-    path: "/home",
-    element: <Home />,
-  },
-  {
-    name: "profile",
-    path: "/profile",
-    element: <Profile />,
-  },
-  {
-    name: "Sign In",
-    path: "/sign-in",
-    element: <SignIn />,
-  },
-  {
-    name: "Sign Up",
-    path: "/sign-up",
-    element: <SignUp />,
-  },
-  {
-    name: "Docs",
-    href: "https://www.material-tailwind.com/docs/react/installation",
-    target: "_blank",
-    element: "",
-  },
+  { name: "Início",      path: "/home",     element: <Home />    },
+  { name: "Meu Perfil",  path: "/profile",  element: <Profile /> },
+  { name: "Entrar",      path: "/sign-in",  element: <SignIn />  },
+  { name: "Cadastrar-se",path: "/sign-up",  element: <SignUp />  },
+  { name: "Cursos",path:'/courses',element: <CoursesPage />},
 ];
 
 export default routes;

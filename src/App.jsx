@@ -1,23 +1,62 @@
-import { Routes, Route, Navigate, useLocation } from "react-router-dom";
+// src/App.jsx
+import React from "react";
+import { Routes, Route, Navigate, useLocation, Link } from "react-router-dom";
+import { useSelector, useDispatch } from "react-redux";
+import { Button } from "@material-tailwind/react";
+import AuthService from "@/services/authService";
+import { clearUser } from "@/store/userSlice";
 import { Navbar } from "@/widgets/layout";
 import routes from "@/routes";
 
-
 function App() {
   const { pathname } = useLocation();
+  const user = useSelector((state) => state.user.info);
+  const dispatch = useDispatch();
+
+  console.log("user:", user);
+
+  const navRoutes = routes.filter((r) => {
+    if (user) {
+      return r.path !== "/sign-in" && r.path !== "/sign-up";
+    } else {
+      return r.path !== "/profile";
+    }
+  });
+
+  console.log("navRoutes:", navRoutes);
+
+  const handleLogout = () => {
+    dispatch(clearUser());
+    AuthService.logout();
+  };
+
+  const navAction = user ? (
+    <div className="flex items-center gap-4">
+      <span className="text-white">Olá, {user.name}</span>
+      <Button variant="text" size="sm" onClick={handleLogout}>
+        Sair
+      </Button>
+    </div>
+  ) : (
+    <Link to="/sign-in">
+      <Button variant="gradient" size="sm">
+        Entrar
+      </Button>
+    </Link>
+  );
 
   return (
     <>
-      {!(pathname == '/sign-in' || pathname == '/sign-up') && (
+      {!["/sign-in", "/sign-up"].includes(pathname) && (
         <div className="container absolute left-2/4 z-10 mx-auto -translate-x-2/4 p-4">
-          <Navbar routes={routes} />
+          <Navbar routes={navRoutes} action={navAction} />
         </div>
-      )
-      }
+      )}
+
       <Routes>
         {routes.map(
           ({ path, element }, key) =>
-            element && <Route key={key} exact path={path} element={element} />
+            element && <Route key={key} path={path} element={element} />
         )}
         <Route path="*" element={<Navigate to="/home" replace />} />
       </Routes>

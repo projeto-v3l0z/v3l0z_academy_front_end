@@ -29,12 +29,11 @@ export function Home() {
                 color="white"
                 className="mb-6 font-black"
               >
-                Your story starts with us.
+                V3LOZ Academy
               </Typography>
               <Typography variant="lead" color="white" className="opacity-80">
-                This is a simple example of a Landing Page you can build using
-                Material Tailwind. It features multiple components based on the
-                Tailwind CSS and Material Design by Google.
+                Transforme sua carreira com cursos práticos e atualizados em
+                desenvolvimento web, mobile e backend.
               </Typography>
             </div>
           </div>
@@ -65,19 +64,14 @@ export function Home() {
                 className="mb-3 font-bold"
                 color="blue-gray"
               >
-                Working with us is a pleasure
+                Aprenda com os melhores
               </Typography>
               <Typography className="mb-8 font-normal text-blue-gray-500">
-                Don't let your uses guess by attaching tooltips and popoves to
-                any element. Just make sure you enable them first via
-                JavaScript.
-                <br />
-                <br />
-                The kit comes with three pre-built pages to help you get started
-                faster. You can change the text and images and you're good to
-                go. Just make sure you enable them first via JavaScript.
+                Nossos cursos são ministrados por profissionais experientes do
+                mercado, com foco em projetos reais e hands‑on. Você sairá pronto
+                para atuar em qualquer desafio de desenvolvimento.
               </Typography>
-              <Button variant="filled">read more</Button>
+              <Button variant="filled">Saiba Mais</Button>
             </div>
             <div className="mx-auto mt-24 flex w-full justify-center px-4 md:w-4/12 lg:mt-0">
               <Card className="shadow-lg border shadow-gray-500/10 rounded-lg">
@@ -89,18 +83,23 @@ export function Home() {
                   />
                 </CardHeader>
                 <CardBody>
-                  <Typography variant="small" color="blue-gray" className="font-normal">Enterprise</Typography>
+                  <Typography
+                    variant="small"
+                    color="blue-gray"
+                    className="font-normal"
+                  >
+                    Full-Stack
+                  </Typography>
                   <Typography
                     variant="h5"
                     color="blue-gray"
                     className="mb-3 mt-2 font-bold"
                   >
-                    Top Notch Services
+                    Formação Completa
                   </Typography>
                   <Typography className="font-normal text-blue-gray-500">
-                    The Arctic Ocean freezes every winter and much of the
-                    sea-ice then thaws every summer, and that process will
-                    continue whatever happens.
+                    Domine as tecnologias de frontend e backend em um só lugar
+                    e construa aplicações completas do zero até a produção.
                   </Typography>
                 </CardBody>
               </Card>
@@ -110,10 +109,10 @@ export function Home() {
       </section>
       <section className="px-4 pt-20 pb-48">
         <div className="container mx-auto">
-          <PageTitle section="Our Team" heading="Here are our heroes">
-            According to the National Oceanic and Atmospheric Administration,
-            Ted, Scambos, NSIDClead scentist, puts the potentially record
-            maximum.
+          <PageTitle section="Instrutores" heading="Conheça nossos especialistas">
+            Nossos instrutores são profissionais atuantes no mercado de
+            tecnologia, prontos para compartilhar conhecimentos práticos e
+            experiências reais.
           </PageTitle>
           <div className="mt-24 grid grid-cols-1 gap-12 gap-x-24 md:grid-cols-2 xl:grid-cols-4">
             {teamData.map(({ img, name, position, socials }) => (
@@ -138,10 +137,9 @@ export function Home() {
       </section>
       <section className="relative bg-white py-24 px-4">
         <div className="container mx-auto">
-          <PageTitle section="Co-Working" heading="Build something">
-            Put the potentially record low maximum sea ice extent tihs year down
-            to low ice. According to the National Oceanic and Atmospheric
-            Administration, Ted, Scambos.
+          <PageTitle section="Comunidade" heading="Participe dos projetos">
+            Desenvolva projetos reais em equipe, troque experiências e acelere
+            seu aprendizado na V3LOZ Academy.
           </PageTitle>
           <div className="mx-auto mt-20 mb-48 grid max-w-5xl grid-cols-1 gap-16 md:grid-cols-2 lg:grid-cols-3">
             {contactData.map(({ title, icon, description }) => (
@@ -165,15 +163,15 @@ export function Home() {
               </Card>
             ))}
           </div>
-          <PageTitle section="Contact Us" heading="Want to work with us?">
-            Complete this form and we will get back to you in 24 hours.
+          <PageTitle section="Contato" heading="Vamos conversar?">
+            Preencha o formulário abaixo e entraremos em contato em até 24 horas.
           </PageTitle>
           <form className="mx-auto w-full mt-12 lg:w-5/12">
             <div className="mb-8 flex gap-8">
-              <Input variant="outlined" size="lg" label="Full Name" />
-              <Input variant="outlined" size="lg" label="Email Address" />
+              <Input variant="outlined" size="lg" label="Nome Completo" />
+              <Input variant="outlined" size="lg" label="E-mail" />
             </div>
-            <Textarea variant="outlined" size="lg" label="Message" rows={8} />
+            <Textarea variant="outlined" size="lg" label="Mensagem" rows={8} />
             <Checkbox
               label={
                 <Typography
@@ -181,19 +179,19 @@ export function Home() {
                   color="gray"
                   className="flex items-center font-normal"
                 >
-                  I agree the
+                  Eu concordo com os{" "}
                   <a
                     href="#"
                     className="font-medium transition-colors hover:text-gray-900"
                   >
-                    &nbsp;Terms and Conditions
+                    Termos e Condições
                   </a>
                 </Typography>
               }
               containerProps={{ className: "-ml-2.5" }}
             />
             <Button variant="gradient" size="lg" className="mt-8" fullWidth>
-              Send Message
+              Enviar Mensagem
             </Button>
           </form>
         </div>
