@@ -1,4 +1,6 @@
-import React, { useState } from "react";
+"use client";
+
+import React, { useEffect, useState } from "react";
 import {
   Card,
   CardHeader,
@@ -11,46 +13,11 @@ import {
   DialogHeader,
   DialogBody,
   DialogFooter,
+  Spinner,
+  Alert,
 } from "@material-tailwind/react";
+import CourseService from "@/services/coursesService";
 
-// Mock de dados de cursos
-const mockCourses = [
-  {
-    id: 1,
-    title: "React Avançado",
-    image: "https://placehold.co/600x400?text=React+Avançado",
-    duration: "20h",
-    price: 0,
-    isFree: true,
-    professor: "Maria Souza",
-    description:
-      "Neste curso, você vai dominar conceitos avançados do React, incluindo hooks personalizados, contexto, suspense e otimizações de performance.",
-  },
-  {
-    id: 2,
-    title: "Node.js Completo",
-    image: "https://placehold.co/600x400?text=Node.js+Completo",
-    duration: "15h",
-    price: 199.9,
-    isFree: false,
-    professor: "Carlos Pereira",
-    description:
-      "Aprenda a construir APIs RESTful, autenticação, manipulação de arquivos e deploy de aplicações backend com Node.js e Express.",
-  },
-  {
-    id: 3,
-    title: "TypeScript Essencial",
-    image: "https://placehold.co/600x400?text=TypeScript+Essencial",
-    duration: "10h",
-    price: 0,
-    isFree: true,
-    professor: "Ana Lima",
-    description:
-      "Introdução ao TypeScript: tipos básicos, funções genéricas, interfaces, classes e integração com frameworks modernos.",
-  },
-];
-
-// Card personalizado com estilo dark, hover e modal de detalhes
 function CourseCard({ course }) {
   const [open, setOpen] = useState(false);
   const handleOpen = () => setOpen(!open);
@@ -66,8 +33,8 @@ function CourseCard({ course }) {
           />
           <div className="absolute top-4 left-4">
             <Chip
-              value={course.isFree ? "Free" : "Pago"}
-              color={course.isFree ? "green" : "red"}
+              value={course.is_free ? "Free" : "Pago"}
+              color={course.is_free ? "green" : "red"}
               size="sm"
               className="font-bold"
             />
@@ -78,10 +45,10 @@ function CourseCard({ course }) {
             {course.title}
           </Typography>
           <Typography variant="small" className="text-gray-400 mb-2">
-            Carga horária: {course.duration}
+            Carga horária: {course.workload}h
           </Typography>
           <Typography variant="h6" className="mt-2 font-semibold text-white">
-            {course.isFree ? "Gratuito" : `R$ ${course.price.toFixed(2)}`}
+            {course.is_free ? "Gratuito" : `R$ ${parseFloat(course.price).toFixed(2)}`}
           </Typography>
         </CardBody>
         <CardFooter className="flex items-center justify-between p-6">
@@ -110,11 +77,8 @@ function CourseCard({ course }) {
             alt={course.title}
             className="mb-4 w-full h-48 object-cover rounded-xl"
           />
-          <Typography variant="small" className="text-gray-400 mb-2">
-            Professor: {course.professor}
-          </Typography>
           <Typography variant="small" className="text-gray-400 mb-4">
-            Carga horária: {course.duration}
+            Carga horária: {course.workload}h
           </Typography>
           <Typography className="text-gray-200">
             {course.description}
@@ -130,7 +94,7 @@ function CourseCard({ course }) {
             Fechar
           </Button>
           <Button size="sm" color="red" ripple>
-            {course.isFree ? "Matricular-se" : "Comprar"}
+            {course.is_free ? "Matricular-se" : "Comprar"}
           </Button>
         </DialogFooter>
       </Dialog>
@@ -138,8 +102,46 @@ function CourseCard({ course }) {
   );
 }
 
-// Página de listagem de cursos com fundo escuro
 export default function CoursesPage() {
+  const [courses, setCourses] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+  useEffect(() => {
+    async function fetchCourses() {
+      try {
+        const response = await CourseService.listCourses();
+        console.log("Cursos recebidos:", response);
+        setCourses(response.results);
+      } catch (err) {
+        console.error("Erro ao buscar cursos:", err);
+        setError("Erro ao carregar cursos.");
+      } finally {
+        setLoading(false);
+      }
+    }
+
+    fetchCourses();
+  }, []);
+
+  if (loading) {
+    return (
+      <div className="flex justify-center items-center min-h-screen bg-black">
+        <Spinner color="red" className="h-12 w-12" />
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="flex justify-center items-center min-h-screen bg-black">
+        <Alert color="red" className="text-center">
+          {error}
+        </Alert>
+      </div>
+    );
+  }
+
   return (
     <div className="bg-black min-h-screen py-12">
       <div className="container mx-auto px-4">
@@ -150,7 +152,7 @@ export default function CoursesPage() {
           Nossos Cursos
         </Typography>
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-8">
-          {mockCourses.map((course) => (
+          {Array.isArray(courses) && courses.map((course) => (
             <CourseCard key={course.id} course={course} />
           ))}
         </div>

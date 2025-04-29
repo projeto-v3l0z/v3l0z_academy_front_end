@@ -1,30 +1,26 @@
 import apiClient from './apiClient';
-import Cookies from 'js-cookie';
 
 const AuthService = {
   login: async ({ email, password }) => {
-    // 1. faz o login e guarda resposta inteira
     const response = await apiClient.post("/accounts/auth/login/", { email, password });
-    console.log("🔑 login response:", response.data);
+    const { access, refresh, user } = response.data;
 
-    // 2. salva os tokens no cookie
-    Cookies.set("access_token", response.data.access_token);
-    Cookies.set("refresh_token", response.data.refresh_token);
+    localStorage.setItem("access_token", access);
+    localStorage.setItem("refresh_token", refresh);
+    localStorage.setItem("user", JSON.stringify(user)); // 🔥 Salva o usuário também!
 
-    const user = response.data.user;
+    apiClient.defaults.headers.Authorization = `Bearer ${access}`;
 
-    console.log("👤 user na response:", user);
-
-    // 4. retorne token e user
     return {
-      token: response.data.access_token,
+      token: access,
       user,
     };
   },
 
   logout: () => {
-    Cookies.remove("access_token");
-    Cookies.remove("refresh_token");
+    localStorage.removeItem("access_token");
+    localStorage.removeItem("refresh_token");
+    localStorage.removeItem("user"); // 🔥 Remove o user também
     window.location.href = "/sign-in";
   },
 
@@ -34,11 +30,12 @@ const AuthService = {
   },
 
   refreshToken: async () => {
-    const refresh = Cookies.get('refresh_token');
+    const refresh = localStorage.getItem('refresh_token');
     if (!refresh) throw new Error('Sem refresh token');
-    const { data } = await apiClient.post('/accounts/auth/refresh/', { refresh_token: refresh });
-    Cookies.set('access_token', data.access_token);
-    Cookies.set('refresh_token', data.refresh_token);
+
+    const { data } = await apiClient.post('/accounts/auth/refresh/', { refresh: refresh });
+    localStorage.setItem('access_token', data.access);
+    localStorage.setItem('refresh_token', data.refresh);
     return data;
   },
 };

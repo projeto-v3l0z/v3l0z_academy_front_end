@@ -1,5 +1,4 @@
 import axios from 'axios';
-import Cookies from 'js-cookie';
 
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
@@ -10,10 +9,11 @@ const apiClient = axios.create({
   },
 });
 
-// Injeta o token em todo request
+// 🔥 AQUI é a correção
 apiClient.interceptors.request.use(
   (config) => {
-    const token = Cookies.get('access_token');
+    const token = localStorage.getItem('access_token'); // 🔥 Pega na hora!
+    console.log("🔵 1. Verificando token no localStorage:", token);
     if (token) {
       config.headers.Authorization = `Bearer ${token}`;
     }
@@ -22,7 +22,7 @@ apiClient.interceptors.request.use(
   (error) => Promise.reject(error)
 );
 
-// Automatiza refresh de token em 401
+// Refresh interceptor (mantém o seu)
 apiClient.interceptors.response.use(
   (response) => response,
   async (error) => {
@@ -30,21 +30,21 @@ apiClient.interceptors.response.use(
     if (
       error.response?.status === 401 &&
       !originalReq._retry &&
-      Cookies.get('refresh_token')
+      localStorage.getItem('refresh_token')
     ) {
       originalReq._retry = true;
       try {
         const { data } = await axios.post(
           `${API_BASE_URL}/auth/refresh/`,
-          { refresh_token: Cookies.get('refresh_token') }
+          { refresh: localStorage.getItem('refresh_token') }
         );
-        Cookies.set('access_token', data.access_token);
-        Cookies.set('refresh_token', data.refresh_token);
-        originalReq.headers.Authorization = `Bearer ${data.access_token}`;
+        localStorage.setItem('access_token', data.access);
+        localStorage.setItem('refresh_token', data.refresh);
+        originalReq.headers.Authorization = `Bearer ${data.access}`;
         return apiClient(originalReq);
       } catch (e) {
-        Cookies.remove('access_token');
-        Cookies.remove('refresh_token');
+        localStorage.removeItem('access_token');
+        localStorage.removeItem('refresh_token');
         window.location.href = '/login';
         return Promise.reject(e);
       }
