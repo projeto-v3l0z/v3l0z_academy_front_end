@@ -20,14 +20,31 @@ import CourseService from "@/services/coursesService";
 
 function CourseCard({ course }) {
   const [open, setOpen] = useState(false);
+  const [isEnrolled, setIsEnrolled] = useState(false);
   const handleOpen = () => setOpen(!open);
+  const placeHolderImage = "https://placehold.co/600x400?text=Course+Image";
+
+  useEffect(() => {
+    async function checkEnrollment() {
+      try {
+        const myCourses = await CourseService.getMyCourses();
+        const enrolled = myCourses.some(
+          (userCourse) => userCourse.course.id === course.id
+        );
+        setIsEnrolled(enrolled);
+      } catch (error) {
+        console.error("Erro ao verificar matrícula:", error);
+      }
+    }
+    checkEnrollment();
+  }, [course.id]);
 
   return (
     <>
       <Card className="bg-gray-800 shadow-2xl rounded-2xl overflow-hidden transform hover:-translate-y-2 transition-transform duration-300">
         <CardHeader floated={false} className="relative h-48">
           <img
-            src={course.image}
+            src={course.image || placeHolderImage}
             alt={course.title}
             className="h-full w-full object-cover"
           />
@@ -73,7 +90,7 @@ function CourseCard({ course }) {
         <DialogHeader className="text-gray-200">{course.title}</DialogHeader>
         <DialogBody divider>
           <img
-            src={course.image}
+            src={course.image || placeHolderImage}
             alt={course.title}
             className="mb-4 w-full h-48 object-cover rounded-xl"
           />
@@ -93,9 +110,26 @@ function CourseCard({ course }) {
           >
             Fechar
           </Button>
-          <Button size="sm" color="red" ripple>
-            {course.is_free ? "Matricular-se" : "Comprar"}
-          </Button>
+          {isEnrolled ? (
+            <Button
+              size="sm"
+              color="green"
+              ripple={false}
+              disabled
+              className="uppercase tracking-wide"
+            >
+              Já Matriculado
+            </Button>
+          ) : (
+            <Button
+              size="sm"
+              color="red"
+              ripple
+              className="uppercase tracking-wide"
+            >
+              {course.is_free ? "Matricular-se" : "Comprar"}
+            </Button>
+          )}
         </DialogFooter>
       </Dialog>
     </>
@@ -111,7 +145,6 @@ export default function CoursesPage() {
     async function fetchCourses() {
       try {
         const response = await CourseService.listCourses();
-        console.log("Cursos recebidos:", response);
         setCourses(response.results);
       } catch (err) {
         console.error("Erro ao buscar cursos:", err);

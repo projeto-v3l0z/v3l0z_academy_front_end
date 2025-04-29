@@ -12,18 +12,16 @@ function App() {
   const { pathname } = useLocation();
   const user = useSelector((state) => state.user.info);
   const dispatch = useDispatch();
-
-  console.log("user:", user);
-
+  
   const navRoutes = routes.filter((r) => {
+    if (!r.name) return false; // 🔥 1. Só rotas que têm name
+  
     if (user) {
-      return r.path !== "/sign-in" && r.path !== "/sign-up";
+      return r.path !== "/sign-in" && r.path !== "/sign-up"; // 🔥 2. Se logado, oculta login/signup
     } else {
-      return r.path !== "/profile";
+      return r.path !== "/profile"; // 🔥 3. Se não logado, oculta perfil
     }
   });
-
-  console.log("navRoutes:", navRoutes);
 
   const handleLogout = () => {
     dispatch(clearUser());
