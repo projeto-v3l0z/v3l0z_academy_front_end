@@ -6,7 +6,7 @@ const StepService = {
     return data;
   },
   completeStep: async (stepId) => {
-    const { data } = await apiClient.post('/courses/courses/complete-step/', { step_id: stepId });
+    const { data } = await apiClient.post('/courses/complete-step/', { step_id: stepId });
     return data;
   },
 

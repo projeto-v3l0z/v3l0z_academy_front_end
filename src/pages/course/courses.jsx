@@ -1,4 +1,4 @@
-"use client";
+// src/pages/course/courses.jsx
 
 import React, { useEffect, useState } from "react";
 import {
@@ -21,7 +21,7 @@ import CourseService from "@/services/coursesService";
 function CourseCard({ course }) {
   const [open, setOpen] = useState(false);
   const [isEnrolled, setIsEnrolled] = useState(false);
-  const handleOpen = () => setOpen(!open);
+  const [loadingEnroll, setLoadingEnroll] = useState(false);
   const placeHolderImage = "https://placehold.co/600x400?text=Course+Image";
 
   useEffect(() => {
@@ -38,6 +38,21 @@ function CourseCard({ course }) {
     }
     checkEnrollment();
   }, [course.id]);
+
+  const handleOpen = () => setOpen((prev) => !prev);
+
+  const handleEnroll = async () => {
+    setLoadingEnroll(true);
+    try {
+      await CourseService.enrollInCourse(course.id);
+      setIsEnrolled(true);
+    } catch (error) {
+      console.error("Erro ao matricular:", error);
+      alert("Não foi possível matricular-se, tente novamente.");
+    } finally {
+      setLoadingEnroll(false);
+    }
+  };
 
   return (
     <>
@@ -65,7 +80,9 @@ function CourseCard({ course }) {
             Carga horária: {course.workload}h
           </Typography>
           <Typography variant="h6" className="mt-2 font-semibold text-white">
-            {course.is_free ? "Gratuito" : `R$ ${parseFloat(course.price).toFixed(2)}`}
+            {course.is_free
+              ? "Gratuito"
+              : `R$ ${parseFloat(course.price).toFixed(2)}`}
           </Typography>
         </CardBody>
         <CardFooter className="flex items-center justify-between p-6">
@@ -97,9 +114,7 @@ function CourseCard({ course }) {
           <Typography variant="small" className="text-gray-400 mb-4">
             Carga horária: {course.workload}h
           </Typography>
-          <Typography className="text-gray-200">
-            {course.description}
-          </Typography>
+          <Typography className="text-gray-200">{course.description}</Typography>
         </DialogBody>
         <DialogFooter>
           <Button
@@ -126,8 +141,10 @@ function CourseCard({ course }) {
               color="red"
               ripple
               className="uppercase tracking-wide"
+              onClick={handleEnroll}
+              disabled={loadingEnroll}
             >
-              {course.is_free ? "Matricular-se" : "Comprar"}
+              {loadingEnroll ? 'Matriculando...' : course.is_free ? "Matricular-se" : "Comprar"}
             </Button>
           )}
         </DialogFooter>

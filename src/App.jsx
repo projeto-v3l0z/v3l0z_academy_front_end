@@ -10,17 +10,24 @@ import routes from "@/routes";
 
 function App() {
   const { pathname } = useLocation();
-  const user = useSelector((state) => state.user.info);
+  const user = useSelector((state) => state.user.info); // assume user.user_type existe
   const dispatch = useDispatch();
-  
+
+  console.log('user:', user)
+
+  // Determina o role atual
+  const role = user
+    ? user.user_type // 'student' | 'teacher' | 'both'
+    : "guest";
+
   const navRoutes = routes.filter((r) => {
-    if (!r.name) return false; // 🔥 1. Só rotas que têm name
-  
-    if (user) {
-      return r.path !== "/sign-in" && r.path !== "/sign-up"; // 🔥 2. Se logado, oculta login/signup
-    } else {
-      return r.path !== "/profile"; // 🔥 3. Se não logado, oculta perfil
-    }
+    // só rotas com name
+    if (!r.name) return false;
+
+    // se `roles` não estiver declarado, considere visível a todos
+    if (r.roles && !r.roles.includes(role)) return false;
+
+    return true;
   });
 
   const handleLogout = () => {
@@ -52,9 +59,8 @@ function App() {
       )}
 
       <Routes>
-        {routes.map(
-          ({ path, element }, key) =>
-            element && <Route key={key} path={path} element={element} />
+        {routes.map(({ path, element }, idx) =>
+          element ? <Route key={idx} path={path} element={element} /> : null
         )}
         <Route path="*" element={<Navigate to="/home" replace />} />
       </Routes>
