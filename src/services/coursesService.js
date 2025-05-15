@@ -7,6 +7,11 @@ const CourseService = {
     return data;
   },
 
+  find: async (courseId) => {
+    const { data } = await apiClient.get(`/courses/${courseId}/`);
+    return data;
+  },
+
   // Pega detalhes e steps de um curso
   getCourseSteps: async (courseId) => {
     const { data } = await apiClient.get(`/courses/${courseId}/steps/`);

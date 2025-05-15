@@ -22,7 +22,7 @@ import {
   TrophyIcon,
 } from "@heroicons/react/24/solid";
 
-export default function CourseDetail() {
+export default function CourseContentPage() {
   const { id } = useParams();
   const [steps, setSteps] = useState([]);
   const [completedSteps, setCompletedSteps] = useState([]);

@@ -22,7 +22,7 @@ function MyCourseCard({ course }) {
   const placeHolderImage = "https://placehold.co/600x400?text=Course+Image";
 
   const handleAccessCourse = () => {
-    navigate(`/course/${course.course.id}`);
+    navigate(`/courses/${course.course.id}/content`);
   };
 
   return (

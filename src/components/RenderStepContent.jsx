@@ -42,24 +42,28 @@ export default function RenderStepContent({ content }) {
               </Typography>
             );
 
-          case "video": {
-            const src = data.url ??
-              (data.provider === "youtube"
-                ? `https://www.youtube.com/embed/${data.videoId}`
-                : "");
-            return (
-              <div key={key} className="flex justify-center">
-                <iframe
-                  className="rounded-lg"
-                  width="640"
-                  height="360"
-                  src={src}
-                  title={`Vídeo ${idx + 1}`}
-                  allowFullScreen
-                />
-              </div>
-            );
-          }
+            case "video": {
+              let src = "";
+              if (data.provider === "vimeo") {
+                src = data.url;
+              } else if (data.provider === "youtube") {
+                src = `https://www.youtube.com/embed/${data.videoId}`;
+              }
+              return (
+                <div key={key} className="flex justify-center">
+                  <iframe
+                    className="rounded-lg"
+                    width="640"
+                    height="360"
+                    src={src}
+                    title={`Vídeo ${idx + 1}`}
+                    allowFullScreen
+                  />
+                </div>
+              );
+            }
+            
+            
 
           case "image":
             return (
@@ -120,15 +124,13 @@ export default function RenderStepContent({ content }) {
 
           case "embed":
             return (
-              <div key={key} className="flex justify-center">
-                <iframe
-                  src={data.src}
-                  width="100%"
-                  height={data.height || 400}
-                  className="rounded-lg"
-                />
-              </div>
+              <div
+                key={key}
+                className="flex justify-center"
+                dangerouslySetInnerHTML={{ __html: data.embedHtml }}
+              />
             );
+          
 
           case "audio":
             return (

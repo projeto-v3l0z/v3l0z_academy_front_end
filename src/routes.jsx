@@ -2,9 +2,10 @@
 import { Home, Profile, SignIn, SignUp } from "@/pages";
 import CoursesPage from "./pages/course/courses";
 import MyCoursesPage from "./pages/course/myCourses";
-import CourseDetail from "./pages/course/courseDetail";
 import TeacherCoursesPage from "./pages/teacher/TeacherCoursesPage";
 import TeacherCourseStepsPage from "./pages/teacher/TeacherCourseStepsPage";
+import CourseDetailPage from "./pages/course/CourseDetailPage";
+import CourseContentPage from "./pages/course/CourseContentPage";
 
 export const routes = [
   { name: "Início",           path: "/home",     element: <Home /> },
@@ -15,8 +16,9 @@ export const routes = [
   { name: "Meus Cursos",      path: "/myCourses",element: <MyCoursesPage />,roles: ["student", "both"] },
   { name: 'Área do Professor', path: '/teacher', element: <TeacherCoursesPage />, roles: ['teacher', 'both'] },
   { path: '/teacher/courses/:id/steps', element: <TeacherCourseStepsPage /> },
-  // rota sem name não aparece na navbar, mas fica acessível
-  {path: "/course/:id",element: <CourseDetail /> },
+  { path: "/courses/:id/content", element: <CourseContentPage />, roles: ["student", "both"] },
+  { path: "/courses/:id",      element: <CourseDetailPage /> },
+  
 ];
 
 export default routes;
