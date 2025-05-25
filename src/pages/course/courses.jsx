@@ -1,208 +1,156 @@
-// src/pages/course/courses.jsx
-
+// src/pages/course/CoursesPage.jsx
 import React, { useEffect, useState } from "react";
 import {
-  Card,
-  CardHeader,
-  CardBody,
-  CardFooter,
   Typography,
   Chip,
-  Button,
-  Dialog,
-  DialogHeader,
-  DialogBody,
-  DialogFooter,
   Spinner,
   Alert,
 } from "@material-tailwind/react";
+import {
+  GlobeAltIcon,
+  CheckIcon,
+} from "@heroicons/react/24/solid";
+import { Link } from "react-router-dom";
 import CourseService from "@/services/coursesService";
+import PlanetIcon from "@/components/ui/PlanetIcon";
 
+// -----------------------------------------------------------------------------
+// Cada curso como um planeta clicável
+// -----------------------------------------------------------------------------
 function CourseCard({ course }) {
-  const [open, setOpen] = useState(false);
   const [isEnrolled, setIsEnrolled] = useState(false);
-  const [loadingEnroll, setLoadingEnroll] = useState(false);
-  const placeHolderImage = "https://placehold.co/600x400?text=Course+Image";
+  const [progress, setProgress] = useState(0);
 
   useEffect(() => {
-    async function checkEnrollment() {
+    (async () => {
       try {
-        const myCourses = await CourseService.getMyCourses();
-        const enrolled = myCourses.some(
-          (userCourse) => userCourse.course.id === course.id
-        );
+        const my = await CourseService.getMyCourses();
+        const enrolled = my.some(uc => uc.course.id === course.id);
         setIsEnrolled(enrolled);
-      } catch (error) {
-        console.error("Erro ao verificar matrícula:", error);
-      }
-    }
-    checkEnrollment();
+        if (enrolled) {
+          const { progress_percentage } = await CourseService.getCourseProgress(course.id);
+          setProgress(progress_percentage);
+        }
+      } catch {}
+    })();
   }, [course.id]);
 
-  const handleOpen = () => setOpen((prev) => !prev);
-
-  const handleEnroll = async () => {
-    setLoadingEnroll(true);
-    try {
-      await CourseService.enrollInCourse(course.id);
-      setIsEnrolled(true);
-    } catch (error) {
-      console.error("Erro ao matricular:", error);
-      alert("Não foi possível matricular-se, tente novamente.");
-    } finally {
-      setLoadingEnroll(false);
-    }
-  };
+  const placeholder = "https://placehold.co/400x400?text=Planeta";
+  const status = !isEnrolled
+    ? null
+    : progress >= 100
+    ? "Explorado"
+    : "Explorando";
 
   return (
-    <>
-      <Card className="bg-gray-800 shadow-2xl rounded-2xl overflow-hidden transform hover:-translate-y-2 transition-transform duration-300">
-        <CardHeader floated={false} className="relative h-48">
+    <div className="flex flex-col items-center space-y-4">
+      <Link to={`/courses/${course.id}`}> 
+        <div className="relative w-48 h-48 rounded-full overflow-hidden ring-4 ring-red-500/40 hover:scale-105 transition-transform cursor-pointer">
           <img
-            src={course.image || placeHolderImage}
+            src={course.image || placeholder}
             alt={course.title}
-            className="h-full w-full object-cover"
+            className="w-full h-full object-cover"
           />
-          <div className="absolute top-4 left-4">
-            <Chip
-              value={course.is_free ? "Free" : "Pago"}
-              color={course.is_free ? "green" : "red"}
-              size="sm"
-              className="font-bold"
-            />
-          </div>
-        </CardHeader>
-        <CardBody className="p-6">
-          <Typography variant="h5" className="mb-1 font-bold text-white">
-            {course.title}
-          </Typography>
-          <Typography variant="small" className="text-gray-400 mb-2">
-            Carga horária: {course.workload}h
-          </Typography>
-          <Typography variant="h6" className="mt-2 font-semibold text-white">
-            {course.is_free
-              ? "Gratuito"
-              : `R$ ${parseFloat(course.price).toFixed(2)}`}
-          </Typography>
-        </CardBody>
-        <CardFooter className="flex items-center justify-between p-6">
-          <Button
-            size="sm"
-            color="red"
-            ripple={true}
-            className="uppercase tracking-wide"
-            onClick={handleOpen}
-          >
-            Saiba mais
-          </Button>
-        </CardFooter>
-      </Card>
+          <div className="absolute inset-0 bg-black/30" />
+        </div>
+      </Link>
 
-      <Dialog
-        open={open}
-        handler={handleOpen}
-        size="lg"
-        className="bg-gray-900 text-white"
-      >
-        <DialogHeader className="text-gray-200">{course.title}</DialogHeader>
-        <DialogBody divider>
-          <img
-            src={course.image || placeHolderImage}
-            alt={course.title}
-            className="mb-4 w-full h-48 object-cover rounded-xl"
-          />
-          <Typography variant="small" className="text-gray-400 mb-4">
-            Carga horária: {course.workload}h
-          </Typography>
-          <Typography className="text-gray-200">{course.description}</Typography>
-        </DialogBody>
-        <DialogFooter>
-          <Button
-            variant="text"
-            color="white"
-            onClick={handleOpen}
-            className="mr-2"
-          >
-            Fechar
-          </Button>
-          {isEnrolled ? (
-            <Button
-              size="sm"
-              color="green"
-              ripple={false}
-              disabled
-              className="uppercase tracking-wide"
-            >
-              Já Matriculado
-            </Button>
-          ) : (
-            <Button
-              size="sm"
-              color="red"
-              ripple
-              className="uppercase tracking-wide"
-              onClick={handleEnroll}
-              disabled={loadingEnroll}
-            >
-              {loadingEnroll ? 'Matriculando...' : course.is_free ? "Matricular-se" : "Comprar"}
-            </Button>
-          )}
-        </DialogFooter>
-      </Dialog>
-    </>
+      <div className="flex items-center space-x-1">
+        <PlanetIcon className="h-6 w-6 text-indigo-400" />
+        <Typography variant="h6" className="text-white font-bold text-center">
+          {course.title}
+        </Typography>
+      </div>
+
+      <div className="flex items-center space-x-2">
+        <GlobeAltIcon className="h-5 w-5 text-red-400 animate-spin-slow" />
+        <Chip
+          value={course.is_free ? "Gratuito" : `R$ ${parseFloat(course.price).toFixed(2)}`}
+          color={course.is_free ? "gray" : "red"}
+          size="sm"
+          className="font-bold"
+        />
+      </div>
+
+      {status && (
+        <Chip
+          value={status}
+          variant="ghost"
+          color={status === "Explorado" ? "blue" : "yellow"}
+          className={`flex items-center space-x-4 ${status === "Explorando" ? "animate-pulse" : ""}`}
+          icon={
+            status === "Explorado" ? (
+              <CheckIcon className="h-5 w-5 text-blue-400" />
+            ) : (
+              <PlanetIcon className="h-5 w-5 text-yellow-400" />
+            )
+          }
+        />
+      )}
+    </div>
   );
 }
 
+// -----------------------------------------------------------------------------
+// CoursesPage
+// -----------------------------------------------------------------------------
 export default function CoursesPage() {
   const [courses, setCourses] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
   useEffect(() => {
-    async function fetchCourses() {
+    (async () => {
       try {
-        const response = await CourseService.listCourses();
-        setCourses(response.results);
-      } catch (err) {
-        console.error("Erro ao buscar cursos:", err);
-        setError("Erro ao carregar cursos.");
+        const { results } = await CourseService.listCourses();
+        setCourses(results);
+      } catch {
+        setError("Não foi possível carregar cursos.");
       } finally {
         setLoading(false);
       }
-    }
-
-    fetchCourses();
+    })();
   }, []);
 
   if (loading) {
     return (
       <div className="flex justify-center items-center min-h-screen bg-black">
-        <Spinner color="red" className="h-12 w-12" />
+        <Spinner className="h-12 w-12 text-red-500 animate-pulse" />
       </div>
     );
   }
-
   if (error) {
     return (
       <div className="flex justify-center items-center min-h-screen bg-black">
-        <Alert color="red" className="text-center">
-          {error}
-        </Alert>
+        <Alert color="red" className="text-center">{error}</Alert>
       </div>
     );
   }
 
   return (
-    <div className="bg-black min-h-screen py-12">
-      <div className="container mx-auto px-4">
+    <div className="relative min-h-screen overflow-hidden">
+      {/* Vídeo de fundo em loop */}
+      <video
+        src="/space-video.mp4"
+        autoPlay
+        muted
+        loop
+        playsInline
+        className="absolute inset-0 w-full h-full object-cover"
+      />
+      {/* Overlay para escurecer um pouco */}
+      <div className="absolute inset-0 bg-black/60" />
+
+      {/* Conteúdo */}
+      <div className="relative z-1 py-12 container mx-auto px-4">
         <Typography
           variant="h3"
-          className="mb-8 text-center font-bold text-white"
+          className="mb-8 text-center font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-yellow-500 via-red-500 to-orange-500"
         >
-          Nossos Cursos
+          Aventure-se em novos planetas
         </Typography>
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-8">
-          {Array.isArray(courses) && courses.map((course) => (
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-12">
+          {courses.map(course => (
             <CourseCard key={course.id} course={course} />
           ))}
         </div>

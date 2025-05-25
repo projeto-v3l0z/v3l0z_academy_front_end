@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import TeacherCourseService from '@/services/teacherCourseService';
-import StepFormBuilder from '@/components/StepFormBuilder';
+import StepFormBuilder from '@/components/course/StepFormBuilder';
 import {
   Typography,
   Button,

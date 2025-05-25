@@ -1,3 +1,14 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+/* 1) Keyframes para o foguete */
+@keyframes float-rocket {
+  0%   { transform: translateY(100vh) translateX(0); opacity: 1; }
+  100% { transform: translateY(-10vh) translateX(50vw); opacity: 0; }
+}
+
+/* 2) Esconder overflow vertical extra */
+html, body {
+  overflow-x: hidden;
+}

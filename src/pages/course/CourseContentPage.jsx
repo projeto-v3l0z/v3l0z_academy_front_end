@@ -4,7 +4,7 @@ import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import CourseService from "@/services/coursesService";
 import StepService from "@/services/stepService";
-import RenderStepContent from "@/components/RenderStepContent";
+import RenderStepContent from "@/components/course/RenderStepContent";
 import {
   Typography,
   Spinner,

@@ -7,15 +7,18 @@ import {
   Spinner,
   Alert,
   Button,
+  Progress,
+  Avatar,
 } from '@material-tailwind/react';
 import {
   ChevronLeftIcon,
   GiftIcon,
   CurrencyDollarIcon,
+  BoltIcon,
   CheckIcon,
   RocketLaunchIcon,
-  BoltIcon,
 } from '@heroicons/react/24/solid';
+import GamificationDashboard from '@/components/gamification/GamificationDashboard';
 
 export default function CourseDetailPage() {
   const { id } = useParams();
@@ -62,150 +65,219 @@ export default function CourseDetailPage() {
     }
   };
 
-  if (loading) return (
-    <div className="flex justify-center items-center min-h-screen bg-black">
-      <Spinner color="red" className="h-12 w-12" />
-    </div>
-  );
-  if (error) return (
-    <div className="flex justify-center items-center min-h-screen bg-black">
-      <Alert color="red">{error}</Alert>
-    </div>
-  );
+  if (loading) {
+    return (
+      <div className="flex justify-center items-center min-h-screen bg-black">
+        <Spinner color="red" className="h-12 w-12" />
+      </div>
+    );
+  }
+  if (error) {
+    return (
+      <div className="flex justify-center items-center min-h-screen bg-black">
+        <Alert color="red">{error}</Alert>
+      </div>
+    );
+  }
+
+  // Calcular progresso
+  const total = steps.length;
+  const done = completed.length;
+  const percent = total > 0 ? Math.round((done / total) * 100) : 0;
 
   return (
-    <div className="bg-black text-white min-h-screen">
-      {/* Hero */}
+    <div className="relative min-h-screen bg-black text-white">
+      {/* Starfield */}
       <div
-        className="relative h-96 bg-[url('/stars-bg.jpg')] bg-cover bg-center"
-        style={{ backgroundBlendMode: 'multiply' }}
-      >
-        <div className="absolute inset-0 bg-gradient-to-b from-black/70 to-black/90" />
-        <div className="relative z-10 container mx-auto h-full flex flex-col justify-center px-4">
-          <button
-            onClick={() => window.history.back()}
-            className="mb-4 inline-flex items-center gap-2 text-red-400 hover:text-white transition"
-          >
-            <ChevronLeftIcon className="h-6 w-6" />
-            <span>Voltar</span>
-          </button>
-          {/* Paid / Free badge */}
-          <div className="inline-flex items-center gap-1 bg-black/50 px-3 py-1 rounded-full mb-3">
-            {course.is_free
-              ? <GiftIcon className="h-5 w-5 text-green-400 animate-pulse" />
-              : <CurrencyDollarIcon className="h-5 w-5 text-red-400 animate-pulse" />
-            }
-            <Typography
-              variant="small"
-              className={`font-bold ${course.is_free ? 'text-green-400' : 'text-red-400'}`}
-            >
-              {course.is_free ? 'GRATUITO' : 'PAGO'}
-            </Typography>
-          </div>
-          <Typography
-            variant="h2"
-            className="text-4xl md:text-5xl lg:text-6xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-red-500 to-yellow-400"
-          >
-            {course.title}
-          </Typography>
-          <Typography variant="h5" className="mt-2 text-gray-300 flex items-center gap-1">
-            <BoltIcon className="h-5 w-5 text-yellow-300 animate-ping" />
-            {course.workload}h{' '}
-            {!course.is_free && `• R$ ${parseFloat(course.price).toFixed(2)}`}
-          </Typography>
-        </div>
-      </div>
+        className="absolute inset-0 bg-[url('/stars-bg.jpg')] bg-repeat opacity-20"
+        aria-hidden="true"
+      />
 
-      {/* Main content */}
-      <div className="container mx-auto px-4 py-6 space-y-16">
-        <div className="lg:grid lg:grid-cols-3 lg:gap-10">
-          {/* About */}
-          <div className="lg:col-span-2 space-y-8">
-            <Typography variant="h4" className="font-semibold text-red-400">
-              Sobre este curso
+      {/* Conteúdo principal (abaixo da Navbar) */}
+      <div className="relative z-1 container mx-auto px-4 pt-20 pb-12">
+        {/* Header */}
+        <div className="relative h-80 bg-[url('/nebula-bg.jpg')] bg-cover bg-center rounded-2xl overflow-hidden drop-shadow-lg mb-8">
+          <div className="absolute inset-0 bg-gradient-to-b from-purple-900/50 to-indigo-900/80" />
+          <div className="relative z-1 h-full flex flex-col justify-center px-6">
+            <button
+              onClick={() => window.history.back()}
+              className="flex items-center mb-3 text-indigo-200 hover:text-white"
+            >
+              <ChevronLeftIcon className="h-6 w-6 mr-2" /> Voltar
+            </button>
+            <div className="inline-flex items-center gap-2 mb-4 bg-black/50 px-3 py-1 rounded-full animate-pulse">
+              {course.is_free ? (
+                <GiftIcon className="h-5 w-5 text-green-300" />
+              ) : (
+                <CurrencyDollarIcon className="h-5 w-5 text-red-300" />
+              )}
+              <Typography
+                variant="small"
+                className={course.is_free ? 'text-green-300' : 'text-red-300'}
+              >
+                {course.is_free ? 'GRATUITO' : 'PAGO'}
+              </Typography>
+            </div>
+            <Typography
+              variant="h1"
+              className="text-4xl md:text-5xl lg:text-6xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-pink-500 via-purple-500 to-indigo-400"
+            >
+              {course.title}
             </Typography>
-            <Typography className="text-gray-300 leading-relaxed">
-              {course.description}
-            </Typography>
+            <div className="mt-2 flex items-center space-x-4 text-indigo-200">
+              <BoltIcon className="h-5 w-5 text-yellow-400 animate-ping" />
+              <span>{course.workload}h</span>
+              {!course.is_free && (
+                <span>• R$ {parseFloat(course.price).toFixed(2)}</span>
+              )}
+            </div>
           </div>
-          {/* Actions */}
-          <div className="space-y-6 flex flex-col items-stretch mt-10 lg:mt-0">
-            {isEnrolled
-              ? <Button size="lg" color="green" className="w-full hover:scale-105 transition">Já Matriculado</Button>
-              : <Button
-                  size="lg"
-                  color="red"
-                  className="w-full hover:scale-105 transition"
+        </div>
+
+        {/* Grid Principal */}
+        <div className="lg:grid lg:grid-cols-4 lg:gap-8">
+          {/* Conteúdo do Curso */}
+          <div className="lg:col-span-3 space-y-8">
+            {/* Ações */}
+            <div className="flex flex-wrap gap-4">
+              {!isEnrolled && (
+                <Button
                   onClick={handleEnroll}
                   disabled={loadingEnroll}
+                  color="red"
+                  size="lg"
                 >
-                  {loadingEnroll ? 'Processando...' : course.is_free ? 'Matricular‐se' : 'Comprar'}
+                  {loadingEnroll ? 'Processando...' : 'Matricular-se'}
                 </Button>
-            }
-            {isEnrolled && (
-              <Link to={`/courses/${course.id}/content`}>
-                <Button size="lg" color="white" className="w-full mt-2 hover:scale-105 transition">
-                  Iniciar Curso
+              )}
+              {isEnrolled && percent < 100 && (
+                <Link to={`/courses/${id}/content`}>
+                  <Button color="yellow" size="lg">
+                    Continuar Explorando
+                  </Button>
+                </Link>
+              )}
+              {isEnrolled && percent >= 100 && (
+                <Button color="blue" size="lg" disabled>
+                  Explorado
                 </Button>
-              </Link>
-            )}
-          </div>
-        </div>
+              )}
+            </div>
 
-        {/* Gamified learning path */}
-        <div>
-          <Typography variant="h4" className="font-semibold text-red-400 mb-6">
-            O que você vai aprender
-          </Typography>
-          <div className="overflow-x-auto py-4">
-            <ul className="flex items-center space-x-8 px-2">
-              {steps.map((step, idx) => {
-                const done = completed.includes(step.id);
-                return (
-                  <React.Fragment key={step.id}>
-                    <li className="flex flex-col items-center text-center group">
-                      <div
-                        title={step.title}
-                        className={`
-                          relative w-16 h-16 flex items-center justify-center rounded-full text-2xl font-extrabold
-                          transition-transform duration-300
-                          ${done
-                            ? 'bg-green-500 text-black shadow-[0_0_20px_rgba(34,197,94,0.7)] hover:scale-110'
-                            : isEnrolled
-                              ? 'bg-gray-800 text-gray-300 hover:bg-red-700 hover:shadow-[0_0_15px_rgba(220,38,38,0.6)] hover:scale-110'
-                              : 'bg-gray-700 text-gray-500'
-                          }
-                        `}
-                      >
-                        {done
-                          ? <CheckIcon className="h-8 w-8" />
-                          : idx + 1
+            {/* Progresso */}
+            {isEnrolled && (
+              <div>
+                <Typography variant="h5" className="mb-2">
+                  Progresso do curso: {percent}%
+                </Typography>
+                <Progress
+                  value={percent}
+                  className="h-3 rounded-full bg-gray-700"
+                  barClassName="bg-green-400"
+                />
+              </div>
+            )}
+
+            {/* Sobre */}
+            <section className="bg-[#1f1f2e] p-6 rounded-2xl drop-shadow-md">
+              <Typography variant="h4" className="text-red-400 mb-4">
+                Sobre este curso
+              </Typography>
+              <Typography className="text-gray-300 leading-relaxed">
+                {course.description}
+              </Typography>
+            </section>
+
+            {/* Etapas - scrollable */}
+            <section className="max-h-[400px] overflow-y-auto">
+              <Typography variant="h4" className="text-red-400 mb-4">
+                Etapas do aprendizado
+              </Typography>
+              <ol className="border-l-2 border-indigo-600 ml-4">
+                {steps.map((step, idx) => {
+                  const doneStep = completed.includes(step.id);
+                  return (
+                    <li
+                      key={step.id}
+                      className="mb-8 ml-4 relative"
+                    >
+                      <span
+                        className={
+                          `absolute -left-6 top-0 p-1 rounded-full border-2 ` +
+                          (doneStep
+                            ? 'bg-green-400 border-green-500'
+                            : 'bg-gray-800 border-gray-600')
                         }
-                        {done && (
-                          <RocketLaunchIcon className="absolute -top-2 -right-2 h-6 w-6 text-yellow-300 animate-bounce" />
+                      >
+                        {doneStep ? (
+                          <CheckIcon className="h-4 w-4 text-black" />
+                        ) : (
+                          <span className="text-gray-500 font-bold">
+                            {idx + 1}
+                          </span>
+                        )}
+                      </span>
+                      <div className="pl-2">
+                        <Typography
+                          variant="h6"
+                          className={doneStep ? 'text-green-300' : 'text-indigo-200'}
+                        >
+                          {step.title}
+                        </Typography>
+                        {step.description && (
+                          <Typography className="text-gray-400 mt-1">
+                            {step.description}
+                          </Typography>
                         )}
                       </div>
-                      <Typography
-                        variant="small"
-                        className="mt-2 max-w-[100px] text-sm leading-snug break-words"
-                        title={step.title}
-                      >
-                        {step.title}
-                      </Typography>
                     </li>
-                    {idx < steps.length - 1 && (
-                      <div
-                        className={`
-                          flex-auto h-1 rounded-full transition-all duration-300
-                          ${completed[idx] ? 'bg-green-500' : 'bg-gray-700 group-hover:bg-red-600'}
-                        `}
-                      />
-                    )}
-                  </React.Fragment>
-                );
-              })}
-            </ul>
+                  );
+                })}
+              </ol>
+              {/* Mensagem de conclusão */}
+              {isEnrolled && percent >= 100 && (
+                <div className="mt-4 p-4 bg-green-800 rounded-lg text-center">
+                  <Typography variant="h6" className="text-white">
+                    Parabéns! Você completou todas as etapas!
+                  </Typography>
+                </div>
+              )}
+
+              {/* Passaporte Galáctico */}
+              {isEnrolled && percent >= 100 && (
+                <section className="mt-6 bg-[#1a1a2e] p-6 rounded-2xl drop-shadow-md relative">
+                  <Typography
+                    variant="h4"
+                    className="text-yellow-400 mb-4 flex items-center justify-center space-x-2"
+                  >
+                    <RocketLaunchIcon className="h-6 w-6 text-yellow-300 animate-pulse" />
+                    Passaporte Galáctico
+                  </Typography>
+                  <div className="flex items-center justify-center mb-4">
+                    <Avatar
+                      size="xl"
+                      variant="circular"
+                      alt={course.title}
+                      src={course.image}
+                      className="ring-4 ring-yellow-400/50"
+                    />
+                  </div>
+                  <Typography className="text-gray-300 text-center mb-2">
+                    Parabéns, comandante! Seu passaporte foi carimbado com o planeta{' '}
+                    <strong>{course.title}</strong>.
+                  </Typography>
+                  <Typography className="text-gray-300 text-center">
+                    Você ganhou <strong>10 XP</strong> por completar esta jornada.
+                  </Typography>
+                </section>
+              )}
+            </section>
           </div>
+
+          {/* Sidebar gamificada */}
+          <aside className="hidden lg:block lg:col-span-1">
+            <GamificationDashboard />
+          </aside>
         </div>
       </div>
     </div>

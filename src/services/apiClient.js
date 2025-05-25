@@ -1,54 +1,55 @@
+// src/services/apiClient.js
 import axios from 'axios';
 
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
 const apiClient = axios.create({
   baseURL: API_BASE_URL,
-  headers: {
-    'Content-Type': 'application/json',
-  },
+  headers: { 'Content-Type': 'application/json' },
 });
 
-// 🔥 AQUI é a correção
-apiClient.interceptors.request.use(
-  (config) => {
-    const token = localStorage.getItem('access_token'); // 🔥 Pega na hora!
-    console.log("🔵 1. Verificando token no localStorage:", token);
-    if (token) {
-      config.headers.Authorization = `Bearer ${token}`;
-    }
-    return config;
-  },
-  (error) => Promise.reject(error)
-);
+// 1) Injeta access_token em cada requisição
+apiClient.interceptors.request.use(config => {
+  const token = localStorage.getItem('access_token');
+  if (token) config.headers.Authorization = `Bearer ${token}`;
+  return config;
+}, error => Promise.reject(error));
 
-// Refresh interceptor (mantém o seu)
+// 2) Se receber 401, tenta usar o refresh token
 apiClient.interceptors.response.use(
-  (response) => response,
-  async (error) => {
+  response => response,
+  async error => {
     const originalReq = error.config;
+    const refreshToken = localStorage.getItem('refresh_token');
+
     if (
       error.response?.status === 401 &&
       !originalReq._retry &&
-      localStorage.getItem('refresh_token')
+      refreshToken
     ) {
       originalReq._retry = true;
       try {
+        // solicita novo access usando o refresh
         const { data } = await axios.post(
           `${API_BASE_URL}/auth/refresh/`,
-          { refresh: localStorage.getItem('refresh_token') }
+          { refresh: refreshToken }
         );
+        // atualiza tokens
         localStorage.setItem('access_token', data.access);
         localStorage.setItem('refresh_token', data.refresh);
+        // repete requisição original com novo token
         originalReq.headers.Authorization = `Bearer ${data.access}`;
         return apiClient(originalReq);
-      } catch (e) {
+      } catch (refreshError) {
+        // falhou no refresh → limpa e redireciona
         localStorage.removeItem('access_token');
         localStorage.removeItem('refresh_token');
-        window.location.href = '/login';
-        return Promise.reject(e);
+        alert('Sessão expirada. Por favor, faça login novamente.');
+        window.location.href = '/sign-in';
+        return Promise.reject(refreshError);
       }
     }
+
     return Promise.reject(error);
   }
 );
