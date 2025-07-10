@@ -1,28 +1,25 @@
 import {
-  BriefcaseIcon,
-  ChartBarIcon,
-  PlayIcon,
+  ChatBubbleLeftRightIcon,
+  VideoCameraIcon,
+  UsersIcon,
 } from "@heroicons/react/24/solid";
 
 export const contactData = [
   {
-    title: "Excelent Services",
-    icon: BriefcaseIcon,
-    description:
-      "Some quick example text to build on the card title and make up the bulk of the card's content.",
+    title: "Suporte Intergaláctico",
+    icon: ChatBubbleLeftRightIcon,
+    description: "Estamos prontos para te ajudar em qualquer fase da missão.",
   },
   {
-    title: "Grow Your Market",
-    icon: ChartBarIcon,
+    title: "Mentorias ao vivo",
+    icon: VideoCameraIcon,
     description:
-      "Some quick example text to build on the card title and make up the bulk of the card's content.",
+      "Aulas e sessões em tempo real para esclarecer dúvidas e evoluir mais rápido.",
   },
   {
-    title: "Launch Time",
-    icon: PlayIcon,
+    title: "Comunidade de Exploradores",
+    icon: UsersIcon,
     description:
-      "Some quick example text to build on the card title and make up the bulk of the card's content.",
+      "Troque ideias, compartilhe código e cresça junto com outros desenvolvedores.",
   },
 ];
-
-export default contactData;

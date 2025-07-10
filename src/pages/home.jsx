@@ -10,35 +10,76 @@ import {
   Textarea,
   Checkbox,
 } from "@material-tailwind/react";
-import { FingerPrintIcon, UsersIcon } from "@heroicons/react/24/solid";
+import { FingerPrintIcon } from "@heroicons/react/24/solid";
 import { PageTitle, Footer } from "@/widgets/layout";
 import { FeatureCard, TeamCard } from "@/widgets/cards";
 import { featuresData, teamData, contactData } from "@/data";
+import { Typewriter } from "react-simple-typewriter";
+import { motion } from "framer-motion";
 
 export function Home() {
   return (
     <>
-      <div className="relative flex h-screen content-center items-center justify-center pt-16 pb-32">
-        <div className="absolute top-0 h-full w-full bg-[url('/stars-bg.jpg')] bg-cover bg-center" />
-        <div className="absolute top-0 h-full w-full bg-black/60 bg-cover bg-center" />
-        <div className="max-w-8xl container relative mx-auto">
-          <div className="flex flex-wrap items-center">
-            <div className="ml-auto mr-auto w-full px-4 text-center lg:w-8/12">
-              <Typography
-                variant="h1"
-                color="white"
-                className="mb-6 font-black"
-              >
-                V3LOZ Academy
-              </Typography>
-              <Typography variant="lead" color="white" className="opacity-80">
-                Transforme sua carreira com cursos práticos e atualizados em
-                desenvolvimento web, mobile e backend.
-              </Typography>
-            </div>
+      {/* HERO SECTION */}
+      <div className="relative flex h-screen items-center justify-center overflow-hidden bg-black px-6 pt-16 pb-32">
+        {/* Fundo galáctico */}
+        <div className="absolute inset-0 z-0 bg-[url('/stars-bg.jpg')] bg-cover bg-center brightness-50" />
+        {/* Overlay escuro */}
+        <div className="absolute inset-0 z-0 bg-black/70" />
+
+        {/* Conteúdo principal */}
+        <motion.div
+          initial={{ opacity: 0, y: 50 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 1 }}
+          className="relative z-20 max-w-4xl text-center text-white"
+        >
+          <Typography
+            variant="h1"
+            className="mb-4 font-black text-4xl md:text-6xl leading-tight"
+          >
+            Inicie sua jornada <br />
+            <span className="text-indigo-400">no universo da programação</span>
+          </Typography>
+          <div className="mb-8 text-lg md:text-xl text-indigo-100 font-light">
+            <span className="mr-2">{">"}</span>
+            <Typewriter
+              words={[
+                "Conectando com a base de lançamento...",
+                "Preparando missão: Desenvolvedor Full Stack",
+                "Destino: Planeta V3L0Z 🚀",
+              ]}
+              loop={0}
+              cursor
+              cursorStyle="_"
+              typeSpeed={60}
+              deleteSpeed={40}
+              delaySpeed={1500}
+            />
           </div>
-        </div>
+
+          <Button
+            size="lg"
+            variant="gradient"
+            color="indigo"
+            className="shadow-lg shadow-indigo-600/50 transition-all hover:scale-105"
+          >
+            Começar sua missão
+          </Button>
+        </motion.div>
+
+        {/* Astronauta flutuando */}
+        <motion.img
+          initial={{ opacity: 0, y: 30 }}
+          animate={{ opacity: 0.8, y: 0 }}
+          transition={{ duration: 2, delay: 1 }}
+          src="/img/astronaut.png"
+          alt="Astronauta"
+          className="absolute bottom-0 right-0 w-48 md:w-72 animate-float z-1"
+        />
       </div>
+
+      {/* SECTION: FEATURES */}
       <section className="-mt-32 bg-white px-4 pb-20 pt-4">
         <div className="container mx-auto">
           <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
@@ -68,8 +109,7 @@ export function Home() {
               </Typography>
               <Typography className="mb-8 font-normal text-blue-gray-500">
                 Nossos cursos são ministrados por profissionais experientes do
-                mercado, com foco em projetos reais e hands‑on. Você sairá pronto
-                para atuar em qualquer desafio de desenvolvimento.
+                mercado, com foco em projetos reais e desafios do dia a dia.
               </Typography>
               <Button variant="filled">Saiba Mais</Button>
             </div>
@@ -78,8 +118,8 @@ export function Home() {
                 <CardHeader floated={false} className="relative h-56">
                   <img
                     alt="Card Image"
-                    src="/img/teamwork.png"
-                    className="h-full w-full"
+                    src="https://source.unsplash.com/600x400/?technology,team"
+                    className="h-full w-full object-cover"
                   />
                 </CardHeader>
                 <CardBody>
@@ -98,8 +138,8 @@ export function Home() {
                     Formação Completa
                   </Typography>
                   <Typography className="font-normal text-blue-gray-500">
-                    Domine as tecnologias de frontend e backend em um só lugar
-                    e construa aplicações completas do zero até a produção.
+                    Domine tecnologias frontend e backend em um só lugar e
+                    desenvolva aplicações reais do zero até a produção.
                   </Typography>
                 </CardBody>
               </Card>
@@ -107,12 +147,12 @@ export function Home() {
           </div>
         </div>
       </section>
+
+      {/* SECTION: TEAM */}
       <section className="px-4 pt-20 pb-48">
         <div className="container mx-auto">
           <PageTitle section="Instrutores" heading="Conheça nossos especialistas">
-            Nossos instrutores são profissionais atuantes no mercado de
-            tecnologia, prontos para compartilhar conhecimentos práticos e
-            experiências reais.
+            Instrutores com experiência de mercado que vão te guiar por toda a jornada rumo à sua carreira dos sonhos.
           </PageTitle>
           <div className="mt-24 grid grid-cols-1 gap-12 gap-x-24 md:grid-cols-2 xl:grid-cols-4">
             {teamData.map(({ img, name, position, socials }) => (
@@ -135,11 +175,13 @@ export function Home() {
           </div>
         </div>
       </section>
+
+      {/* SECTION: CONTACT */}
       <section className="relative bg-white py-24 px-4">
         <div className="container mx-auto">
           <PageTitle section="Comunidade" heading="Participe dos projetos">
-            Desenvolva projetos reais em equipe, troque experiências e acelere
-            seu aprendizado na V3LOZ Academy.
+            Desenvolva projetos em equipe, troque experiências com outros alunos
+            e construa um portfólio sólido com apoio da comunidade.
           </PageTitle>
           <div className="mx-auto mt-20 mb-48 grid max-w-5xl grid-cols-1 gap-16 md:grid-cols-2 lg:grid-cols-3">
             {contactData.map(({ title, icon, description }) => (
@@ -164,7 +206,7 @@ export function Home() {
             ))}
           </div>
           <PageTitle section="Contato" heading="Vamos conversar?">
-            Preencha o formulário abaixo e entraremos em contato em até 24 horas.
+            Preencha o formulário e entraremos em contato o mais rápido possível para apoiar sua jornada.
           </PageTitle>
           <form className="mx-auto w-full mt-12 lg:w-5/12">
             <div className="mb-8 flex gap-8">
@@ -196,6 +238,8 @@ export function Home() {
           </form>
         </div>
       </section>
+
+      {/* FOOTER */}
       <div className="bg-white">
         <Footer />
       </div>

@@ -1,29 +1,29 @@
 import {
-  ChatBubbleBottomCenterTextIcon,
+  RocketLaunchIcon,
+  GlobeAltIcon,
+  UserGroupIcon,
 } from "@heroicons/react/24/solid";
 
 export const featuresData = [
   {
-    color: "gray",
-    title: "Awarded Agency",
-    icon: ChatBubbleBottomCenterTextIcon,
+    color: "blue",
+    title: "Missões Interativas",
+    icon: RocketLaunchIcon,
     description:
-      "Divide details about your product or agency work into parts. A paragraph describing a feature will be enough.",
+      "Aprenda com desafios práticos, como se estivesse explorando planetas em diferentes níveis de conhecimento.",
   },
   {
-    color: "gray",
-    title: "Free Revisions",
-    icon: ChatBubbleBottomCenterTextIcon,
+    color: "purple",
+    title: "Trilhas Gamificadas",
+    icon: GlobeAltIcon,
     description:
-      "Keep you user engaged by providing meaningful information. Remember that by this time, the user is curious.",
+      "Sistema de progresso com conquistas, níveis e recompensas conforme você avança nas trilhas de aprendizado.",
   },
   {
-    color: "gray",
-    title: "Verified Company",
-    icon: ChatBubbleBottomCenterTextIcon,
+    color: "cyan",
+    title: "Mentores Estelares",
+    icon: UserGroupIcon,
     description:
-      "Write a few lines about each one. A paragraph describing a feature will be enough. Keep you user engaged!",
+      "Tenha acesso a especialistas do mercado que guiam você em cada jornada, como comandantes da sua nave.",
   },
 ];
-
-export default featuresData;

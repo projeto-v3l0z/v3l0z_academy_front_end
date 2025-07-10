@@ -1,79 +1,27 @@
 export const teamData = [
   {
-    img: "/img/team-1.jpg",
-    name: "Ryan Tompson",
-    position: "Web Developer",
-    socials: [
-      {
-        color: "light-blue",
-        name: "twitter",
-      },
-      {
-        color: "blue",
-        name: "linkedin",
-      },
-      {
-        color: "pink",
-        name: "dribbble",
-      },
-    ],
+    img: "https://i.pravatar.cc/300?img=11",
+    name: "Amanda Ribeiro",
+    position: "Especialista em Frontend",
+    socials: [{ color: "indigo", name: "linkedin" }],
   },
   {
-    img: "/img/team-2.jpg",
-    name: "Romina Hadid",
-    position: "Marketing Specialist",
-    socials: [
-      {
-        color: "light-blue",
-        name: "twitter",
-      },
-      {
-        color: "blue",
-        name: "linkedin",
-      },
-      {
-        color: "pink",
-        name: "dribbble",
-      },
-    ],
+    img: "https://i.pravatar.cc/300?img=32",
+    name: "Carlos Eduardo",
+    position: "Engenheiro de Software",
+    socials: [{ color: "blue", name: "github" }],
   },
   {
-    img: "/img/team-3.jpg",
-    name: "Alexa Smith",
-    position: "UI/UX Designer",
-    socials: [
-      {
-        color: "light-blue",
-        name: "twitter",
-      },
-      {
-        color: "blue",
-        name: "linkedin",
-      },
-      {
-        color: "pink",
-        name: "dribbble",
-      },
-    ],
+    img: "https://i.pravatar.cc/300?img=45",
+    name: "Juliana Costa",
+    position: "Mentora Full Stack",
+    socials: [{ color: "pink", name: "instagram" }],
   },
   {
-    img: "/img/team-4.png",
-    name: "Jenna Kardi",
-    position: "Founder and CEO",
-    socials: [
-      {
-        color: "light-blue",
-        name: "twitter",
-      },
-      {
-        color: "blue",
-        name: "facebook",
-      },
-      {
-        color: "pink",
-        name: "dribbble",
-      },
-    ],
+    img: "https://i.pravatar.cc/300?img=65",
+    name: "Pedro Oliveira",
+    position: "Dev Backend",
+    socials: [{ color: "gray", name: "twitter" }],
   },
 ];
 

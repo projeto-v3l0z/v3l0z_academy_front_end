@@ -16,12 +16,21 @@
     "@mui/material": "^7.0.2",
     "@reduxjs/toolkit": "^2.7.0",
     "axios": "^1.8.4",
+    "framer-motion": "^12.23.1",
     "js-cookie": "^3.0.5",
+    "lottie-react": "^2.4.1",
     "prop-types": "15.8.1",
     "react": "18.2.0",
+    "react-confetti": "^6.4.0",
     "react-dom": "18.2.0",
+    "react-joyride": "^2.9.3",
     "react-redux": "^9.2.0",
-    "react-router-dom": "6.17.0"
+    "react-router-dom": "6.17.0",
+    "react-simple-typewriter": "^5.0.1",
+    "react-tsparticles": "^2.12.2",
+    "react-use": "^17.6.0",
+    "tsparticles": "^3.8.1",
+    "tsparticles-engine": "^2.12.0"
   },
   "devDependencies": {
     "@types/react": "18.2.31",
