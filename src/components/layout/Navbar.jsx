@@ -95,13 +95,14 @@ export default function Navbar({ routes, user, onLogout }) {
                 </Button>
               </div>
             </>
-          ) : (
-            <Link to="/sign-in">
-              <Button size="sm" color="blue">
-                Entrar
-              </Button>
-            </Link>
-          )}
+          )
+            : (
+              <Link to="/sign-in">
+                <Button size="sm" color="blue">
+                  Entrar
+                </Button>
+              </Link>
+            )}
         </div>
       </nav>
 
@@ -140,43 +141,6 @@ export default function Navbar({ routes, user, onLogout }) {
             </NavLink>
           ))}
           <div className="border-t border-gray-700 my-2" />
-          {user ? (
-            <>
-              <div className="flex items-center space-x-2 px-2">
-                <PlanetIcon className="h-6 w-6 text-indigo-400 animate-spin-slow" />
-                <Typography variant="small" className="text-indigo-200">
-                  Nível {level?.number ?? 1}
-                </Typography>
-              </div>
-              <div className="flex items-center space-x-2 px-2 mt-2">
-                <StarIcon className="h-5 w-5 text-yellow-400 animate-pulse" />
-                <Typography variant="small" className="text-indigo-200">
-                  {xp} XP
-                </Typography>
-              </div>
-              {streak > 0 && (
-                <div className="flex items-center space-x-2 px-2 mt-2">
-                  <FireIcon className="h-5 w-5 text-red-400 animate-bounce" />
-                  <Typography variant="small" className="text-red-300">
-                    {streak} ciclos
-                  </Typography>
-                </div>
-              )}
-              <div className="mt-4 px-2">
-                <Button size="sm" color="red" onClick={onLogout} fullWidth>
-                  Sair
-                </Button>
-              </div>
-            </>
-          ) : (
-            <div className="mt-4 px-2">
-              <Link to="/sign-in" onClick={() => setOpen(false)}>
-                <Button size="sm" color="blue" fullWidth>
-                  Entrar
-                </Button>
-              </Link>
-            </div>
-          )}
         </nav>
       </div>
 
