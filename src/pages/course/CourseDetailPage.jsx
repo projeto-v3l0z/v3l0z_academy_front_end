@@ -1,4 +1,3 @@
-// src/pages/course/CourseDetailPage.jsx
 import React, { useEffect, useState } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import CourseService from '@/services/coursesService';
@@ -15,10 +14,8 @@ import {
   GiftIcon,
   CurrencyDollarIcon,
   BoltIcon,
-  CheckIcon,
   RocketLaunchIcon,
 } from '@heroicons/react/24/solid';
-import GamificationDashboard from '@/components/gamification/GamificationDashboard';
 
 export default function CourseDetailPage() {
   const { id } = useParams();
@@ -43,8 +40,7 @@ export default function CourseDetailPage() {
         setSteps(stepsData);
         setCompleted(completedData);
         setIsEnrolled(myCourses.some(uc => uc.course.id === data.id));
-      } catch (err) {
-        console.error(err);
+      } catch {
         setError('Erro ao carregar detalhes do curso.');
       } finally {
         setLoading(false);
@@ -65,221 +61,229 @@ export default function CourseDetailPage() {
     }
   };
 
-  if (loading) {
-    return (
-      <div className="flex justify-center items-center min-h-screen bg-black">
-        <Spinner color="red" className="h-12 w-12" />
-      </div>
-    );
-  }
-  if (error) {
-    return (
-      <div className="flex justify-center items-center min-h-screen bg-black">
-        <Alert color="red">{error}</Alert>
-      </div>
-    );
-  }
+  if (loading) return <Loader />;
+  if (error) return <ErrorMessage text={error} />;
 
-  // Calcular progresso
   const total = steps.length;
   const done = completed.length;
-  const percent = total > 0 ? Math.round((done / total) * 100) : 0;
+  const percent = total ? Math.round((done / total) * 100) : 0;
 
   return (
-    <div className="relative min-h-screen bg-black text-white">
-      {/* Starfield */}
-      <div
-        className="absolute inset-0 bg-[url('/stars-bg.jpg')] bg-repeat opacity-20"
-        aria-hidden="true"
-      />
+    <div className="relative min-h-screen bg-black text-white z-0">
+      <Background />
 
-      {/* Conteúdo principal (abaixo da Navbar) */}
-      <div className="relative z-1 container mx-auto px-4 pt-20 pb-12">
-        {/* Header */}
-        <div className="relative h-80 bg-[url('/nebula-bg.jpg')] bg-cover bg-center rounded-2xl overflow-hidden drop-shadow-lg mb-8">
-          <div className="absolute inset-0 bg-gradient-to-b from-purple-900/50 to-indigo-900/80" />
-          <div className="relative z-1 h-full flex flex-col justify-center px-6">
-            <button
-              onClick={() => window.history.back()}
-              className="flex items-center mb-3 text-indigo-200 hover:text-white"
-            >
-              <ChevronLeftIcon className="h-6 w-6 mr-2" /> Voltar
-            </button>
-            <div className="inline-flex items-center gap-2 mb-4 bg-black/50 px-3 py-1 rounded-full animate-pulse">
-              {course.is_free ? (
-                <GiftIcon className="h-5 w-5 text-green-300" />
-              ) : (
-                <CurrencyDollarIcon className="h-5 w-5 text-red-300" />
-              )}
-              <Typography
-                variant="small"
-                className={course.is_free ? 'text-green-300' : 'text-red-300'}
-              >
-                {course.is_free ? 'GRATUITO' : 'PAGO'}
-              </Typography>
-            </div>
-            <Typography
-              variant="h1"
-              className="text-4xl md:text-5xl lg:text-6xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-pink-500 via-purple-500 to-indigo-400"
-            >
-              {course.title}
-            </Typography>
-            <div className="mt-2 flex items-center space-x-4 text-indigo-200">
-              <BoltIcon className="h-5 w-5 text-yellow-400 animate-ping" />
-              <span>{course.workload}h</span>
-              {!course.is_free && (
-                <span>• R$ {parseFloat(course.price).toFixed(2)}</span>
-              )}
-            </div>
-          </div>
-        </div>
+      <div className="relative z-1 container mx-auto px-4 pt-24 pb-16 space-y-16">
+        <CourseHeader course={course} />
 
-        {/* Grid Principal */}
-        <div className="lg:grid lg:grid-cols-4 lg:gap-8">
-          {/* Conteúdo do Curso */}
-          <div className="lg:col-span-3 space-y-8">
-            {/* Ações */}
-            <div className="flex flex-wrap gap-4">
-              {!isEnrolled && (
-                <Button
-                  onClick={handleEnroll}
-                  disabled={loadingEnroll}
-                  color="red"
-                  size="lg"
-                >
-                  {loadingEnroll ? 'Processando...' : 'Matricular-se'}
-                </Button>
-              )}
-              {isEnrolled && percent < 100 && (
-                <Link to={`/courses/${id}/content`}>
-                  <Button color="yellow" size="lg">
-                    Continuar Explorando
-                  </Button>
-                </Link>
-              )}
-              {isEnrolled && percent >= 100 && (
-                <Button color="blue" size="lg" disabled>
-                  Explorado
-                </Button>
-              )}
+        <div className="lg:grid lg:grid-cols-4 lg:gap-10 z-1">
+          <main className="lg:col-span-4 space-y-12 z-1">
+            <div className="flex flex-col items-center space-y-4 z-1">
+              <Actions
+                isEnrolled={isEnrolled}
+                loadingEnroll={loadingEnroll}
+                percent={percent}
+                handleEnroll={handleEnroll}
+              />
+              {isEnrolled && <ProgressSection percent={percent} />}
             </div>
 
-            {/* Progresso */}
-            {isEnrolled && (
-              <div>
-                <Typography variant="h5" className="mb-2">
-                  Progresso do curso: {percent}%
-                </Typography>
-                <Progress
-                  value={percent}
-                  className="h-3 rounded-full bg-gray-700"
-                  barClassName="bg-green-400"
-                />
-              </div>
-            )}
-
-            {/* Sobre */}
-            <section className="bg-[#1f1f2e] p-6 rounded-2xl drop-shadow-md">
-              <Typography variant="h4" className="text-red-400 mb-4">
-                Sobre este curso
-              </Typography>
-              <Typography className="text-gray-300 leading-relaxed">
-                {course.description}
-              </Typography>
-            </section>
-
-            {/* Etapas - scrollable */}
-            <section className="max-h-[400px] overflow-y-auto">
-              <Typography variant="h4" className="text-red-400 mb-4">
-                Etapas do aprendizado
-              </Typography>
-              <ol className="border-l-2 border-indigo-600 ml-4">
-                {steps.map((step, idx) => {
-                  const doneStep = completed.includes(step.id);
-                  return (
-                    <li
-                      key={step.id}
-                      className="mb-8 ml-4 relative"
-                    >
-                      <span
-                        className={
-                          `absolute -left-6 top-0 p-1 rounded-full border-2 ` +
-                          (doneStep
-                            ? 'bg-green-400 border-green-500'
-                            : 'bg-gray-800 border-gray-600')
-                        }
-                      >
-                        {doneStep ? (
-                          <CheckIcon className="h-4 w-4 text-black" />
-                        ) : (
-                          <span className="text-gray-500 font-bold">
-                            {idx + 1}
-                          </span>
-                        )}
-                      </span>
-                      <div className="pl-2">
-                        <Typography
-                          variant="h6"
-                          className={doneStep ? 'text-green-300' : 'text-indigo-200'}
-                        >
-                          {step.title}
-                        </Typography>
-                        {step.description && (
-                          <Typography className="text-gray-400 mt-1">
-                            {step.description}
-                          </Typography>
-                        )}
-                      </div>
-                    </li>
-                  );
-                })}
-              </ol>
-              {/* Mensagem de conclusão */}
-              {isEnrolled && percent >= 100 && (
-                <div className="mt-4 p-4 bg-green-800 rounded-lg text-center">
-                  <Typography variant="h6" className="text-white">
-                    Parabéns! Você completou todas as etapas!
-                  </Typography>
-                </div>
-              )}
-
-              {/* Passaporte Galáctico */}
-              {isEnrolled && percent >= 100 && (
-                <section className="mt-6 bg-[#1a1a2e] p-6 rounded-2xl drop-shadow-md relative">
-                  <Typography
-                    variant="h4"
-                    className="text-yellow-400 mb-4 flex items-center justify-center space-x-2"
-                  >
-                    <RocketLaunchIcon className="h-6 w-6 text-yellow-300 animate-pulse" />
-                    Passaporte Galáctico
-                  </Typography>
-                  <div className="flex items-center justify-center mb-4">
-                    <Avatar
-                      size="xl"
-                      variant="circular"
-                      alt={course.title}
-                      src={course.image}
-                      className="ring-4 ring-yellow-400/50"
-                    />
-                  </div>
-                  <Typography className="text-gray-300 text-center mb-2">
-                    Parabéns, comandante! Seu passaporte foi carimbado com o planeta{' '}
-                    <strong>{course.title}</strong>.
-                  </Typography>
-                  <Typography className="text-gray-300 text-center">
-                    Você ganhou <strong>10 XP</strong> por completar esta jornada.
-                  </Typography>
-                </section>
-              )}
-            </section>
-          </div>
-
-          {/* Sidebar gamificada */}
-          <aside className="hidden lg:block lg:col-span-1">
-            <GamificationDashboard />
-          </aside>
+            <Description text={course.description} />
+            <StepsList
+              steps={steps}
+              completed={completed}
+              percent={percent}
+              courseTitle={course.title}
+            />
+          </main>
         </div>
       </div>
     </div>
+  );
+}
+
+function Background() {
+  return (
+    <>
+      <div className="absolute inset-0 bg-[url('/stars-bg.jpg')] bg-repeat opacity-10 z-0" aria-hidden />
+      <div className="absolute inset-0 bg-[url('/nebula-bg.jpg')] bg-cover bg-center mix-blend-screen opacity-20 z-0" aria-hidden />
+    </>
+  );
+}
+
+function Loader() {
+  return (
+    <div className="flex items-center justify-center min-h-screen bg-black z-0">
+      <Spinner color="purple" className="h-16 w-16 animate-spin" />
+    </div>
+  );
+}
+
+function ErrorMessage({ text }) {
+  return (
+    <div className="flex items-center justify-center min-h-screen bg-black z-0">
+      <Alert color="red" className="max-w-lg mx-auto text-center text-lg">{text}</Alert>
+    </div>
+  );
+}
+
+function CourseHeader({ course }) {
+  return (
+    <div className="relative h-96 rounded-3xl overflow-hidden drop-shadow-2xl border border-indigo-500/30 z-1">
+      <div className="absolute inset-0 bg-[url('/nebula-bg.jpg')] bg-cover bg-center opacity-30 z-0" />
+      <div className="absolute inset-0 bg-gradient-to-b from-black/70 to-black/95 z-0" />
+      <div className="relative z-1 flex flex-col justify-center h-full px-8">
+        <Link to="/courses" className="flex items-center text-indigo-300 hover:text-white mb-3">
+          <ChevronLeftIcon className="h-5 w-5 mr-2" /> Voltar aos Cursos
+        </Link>
+
+        <div className="inline-flex items-center mb-4 space-x-3 bg-black/60 px-4 py-1 rounded-full border border-indigo-500/40">
+          {course.is_free ? (
+            <GiftIcon className="h-5 w-5 text-green-400" />
+          ) : (
+            <CurrencyDollarIcon className="h-5 w-5 text-red-400" />
+          )}
+          <Typography variant="small" className={course.is_free ? 'text-green-400' : 'text-red-400'}>
+            {course.is_free ? 'GRATUITO' : 'PAGO'}
+          </Typography>
+        </div>
+
+        <Typography variant="h1" className="text-4xl lg:text-5xl font-bold bg-gradient-to-r from-pink-400 via-purple-500 to-indigo-400 bg-clip-text text-transparent">
+          {course.title}
+        </Typography>
+
+        <div className="mt-3 flex items-center gap-6 text-indigo-300 text-lg">
+          <div className="flex items-center gap-2">
+            <BoltIcon className="h-5 w-5 text-yellow-400 animate-pulse" /> {course.workload}h
+          </div>
+          {!course.is_free && <span>• R$ {parseFloat(course.price).toFixed(2)}</span>}
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function ProgressSection({ percent }) {
+  const progress = Math.min(percent, 100);
+
+  return (
+    <div className="space-y-3 w-full max-w-xl text-center z-1">
+      <Typography variant="h5" className="text-pink-400 font-bold tracking-wide uppercase">
+        Progresso da Jornada
+      </Typography>
+
+      <Typography className="text-gray-300 text-lg font-medium">
+        {progress}% Concluído
+      </Typography>
+
+      <div className="w-full bg-gray-800 h-3 rounded-full overflow-hidden">
+        <div
+          className="h-full bg-gradient-to-r from-red-500 via-pink-500 to-yellow-400 animate-pulse"
+          style={{ width: `${progress}%` }}
+        />
+      </div>
+    </div>
+  );
+}
+
+
+function Description({ text }) {
+  const [expanded, setExpanded] = useState(false);
+  const preview = text.length > 250 ? text.slice(0, 250) + '...' : text;
+
+  return (
+    <section className="bg-gradient-to-b from-[#1f1f2e] to-[#12121c] p-8 rounded-3xl shadow-xl border border-indigo-500/20 z-1">
+      <Typography variant="h4" className="text-pink-400 font-bold mb-4 tracking-wider uppercase">
+        Sobre este Curso
+      </Typography>
+      <Typography className="text-gray-300 leading-relaxed">
+        {expanded ? text : preview}
+      </Typography>
+      {text.length > 250 && (
+        <button
+          onClick={() => setExpanded(!expanded)}
+          className="mt-4 inline-block text-indigo-300 hover:text-indigo-100 transition"
+        >
+          {expanded ? 'Ver menos ▲' : 'Ver mais ▼'}
+        </button>
+      )}
+    </section>
+  );
+}
+
+function Actions({ isEnrolled, loadingEnroll, percent, handleEnroll }) {
+  const progressComplete = percent >= 100;
+
+  return (
+    <div className="flex flex-wrap justify-center gap-6 mt-6 z-1">
+      {!isEnrolled && (
+        <Button onClick={handleEnroll} disabled={loadingEnroll} color="purple" size="lg" className="shadow-lg">
+          {loadingEnroll ? 'Processando...' : 'Matricule-se'}
+        </Button>
+      )}
+
+      {isEnrolled && !progressComplete && (
+        <Link to="content">
+          <Button color="yellow" size="lg" className="shadow-lg hover:scale-105 transition">
+            Continuar Explorando
+          </Button>
+        </Link>
+      )}
+
+      {isEnrolled && progressComplete && (
+        <Button color="green" size="lg" disabled className="opacity-80">
+          Curso Concluído 🚀
+        </Button>
+      )}
+    </div>
+  );
+}
+
+function StepsList({ steps, completed, percent, courseTitle }) {
+  return (
+    <section className="space-y-8 z-1">
+      <Typography variant="h4" className="text-pink-400 font-bold uppercase tracking-wider">
+        Jornada de Aprendizado
+      </Typography>
+
+      <ol className="border-l-2 border-indigo-600 ml-5 pl-4 space-y-6 max-h-[450px] overflow-y-auto pr-3">
+        {steps.map(step => {
+          const isDone = completed.includes(step.id);
+          return (
+            <li key={step.id} className="relative group">
+              <span
+                className={`absolute left-[-13px] top-2 w-4 h-4 rounded-full border-2 ${
+                  isDone ? 'bg-green-400 border-green-400' : 'bg-gray-700 border-gray-500'
+                }`}
+              />
+              <Typography variant="h6" className={`${isDone ? 'text-green-300' : 'text-indigo-100'} font-semibold`}>
+                {step.title}
+              </Typography>
+              {step.description && (
+                <Typography className="text-gray-400 mt-1 text-sm leading-relaxed">
+                  {step.description}
+                </Typography>
+              )}
+            </li>
+          );
+        })}
+      </ol>
+
+      {percent >= 100 && <Passaporte courseTitle={courseTitle} />}
+    </section>
+  );
+}
+
+function Passaporte({ courseTitle }) {
+  return (
+    <section className="bg-gradient-to-br from-[#1a1a2e] to-[#0f0f1c] p-8 rounded-3xl border border-yellow-500/30 shadow-2xl text-center space-y-4 z-1">
+      <Typography variant="h4" className="text-yellow-400 font-bold uppercase tracking-widest flex items-center justify-center gap-2">
+        <RocketLaunchIcon className="h-6 w-6 animate-bounce" /> Passaporte Galáctico
+      </Typography>
+      <Avatar size="xl" variant="circular" alt={courseTitle} src={`/api/courses/${courseTitle}/avatar`} className="ring-4 ring-yellow-400/50 mx-auto" />
+      <Typography className="text-gray-300 text-lg font-medium">
+        Planeta <strong>{courseTitle}</strong> conquistado!
+      </Typography>
+      <Typography className="text-gray-400">Parabéns! +10 XP 🌟</Typography>
+    </section>
   );
 }

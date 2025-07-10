@@ -1,4 +1,3 @@
-// src/pages/course/CoursesPage.jsx
 import React, { useEffect, useState } from "react";
 import {
   Typography,
@@ -6,16 +5,13 @@ import {
   Spinner,
   Alert,
 } from "@material-tailwind/react";
-import {
-  GlobeAltIcon,
-  CheckIcon,
-} from "@heroicons/react/24/solid";
+import { CheckIcon } from "@heroicons/react/24/solid";
 import { Link } from "react-router-dom";
 import CourseService from "@/services/coursesService";
 import PlanetIcon from "@/components/ui/PlanetIcon";
 
 // -----------------------------------------------------------------------------
-// Cada curso como um planeta clicável
+// Card estilo Planeta
 // -----------------------------------------------------------------------------
 function CourseCard({ course }) {
   const [isEnrolled, setIsEnrolled] = useState(false);
@@ -25,7 +21,7 @@ function CourseCard({ course }) {
     (async () => {
       try {
         const my = await CourseService.getMyCourses();
-        const enrolled = my.some(uc => uc.course.id === course.id);
+        const enrolled = my.some((uc) => uc.course.id === course.id);
         setIsEnrolled(enrolled);
         if (enrolled) {
           const { progress_percentage } = await CourseService.getCourseProgress(course.id);
@@ -43,56 +39,61 @@ function CourseCard({ course }) {
     : "Explorando";
 
   return (
-    <div className="flex flex-col items-center space-y-4">
-      <Link to={`/courses/${course.id}`}> 
-        <div className="relative w-48 h-48 rounded-full overflow-hidden ring-4 ring-red-500/40 hover:scale-105 transition-transform cursor-pointer">
+    <div className="flex flex-col items-center bg-white/5 backdrop-blur-md rounded-xl p-6 shadow-md border border-white/10 hover:scale-[1.03] transition-transform duration-300">
+      {/* Planeta (imagem circular) com anel */}
+      <Link to={`/courses/${course.id}`} className="relative mb-4">
+        <div className="w-36 h-36 rounded-full overflow-hidden shadow-lg ring-2 ring-indigo-500 animate-spin-slow relative z-10">
           <img
             src={course.image || placeholder}
             alt={course.title}
-            className="w-full h-full object-cover"
+            className="w-full h-full object-cover rounded-full"
           />
-          <div className="absolute inset-0 bg-black/30" />
         </div>
+        {/* Anel animado */}
+        <div className="absolute top-0 left-0 w-36 h-36 rounded-full border border-indigo-500 opacity-20 animate-pulse-slow" />
       </Link>
 
-      <div className="flex items-center space-x-1">
-        <PlanetIcon className="h-6 w-6 text-indigo-400" />
-        <Typography variant="h6" className="text-white font-bold text-center">
-          {course.title}
-        </Typography>
-      </div>
+      {/* Informações do curso */}
+      <Typography variant="h6" className="text-white font-bold text-center mb-1">
+        {course.title}
+      </Typography>
 
-      <div className="flex items-center space-x-2">
-        <GlobeAltIcon className="h-5 w-5 text-red-400 animate-spin-slow" />
+      <div className="flex flex-wrap justify-center gap-2 text-sm mb-3">
         <Chip
           value={course.is_free ? "Gratuito" : `R$ ${parseFloat(course.price).toFixed(2)}`}
           color={course.is_free ? "gray" : "red"}
           size="sm"
-          className="font-bold"
+          className="text-xs"
         />
+
+        {status && (
+          <Chip
+            value={status}
+            variant="ghost"
+            color={status === "Explorado" ? "blue" : "yellow"}
+            className={`${status === "Explorando" ? "animate-pulse" : ""}`}
+            icon={
+              status === "Explorado" ? (
+                <CheckIcon className="h-4 w-4 text-blue-400" />
+              ) : (
+                <PlanetIcon className="h-4 w-4 text-yellow-400" />
+              )
+            }
+          />
+        )}
       </div>
 
-      {status && (
-        <Chip
-          value={status}
-          variant="ghost"
-          color={status === "Explorado" ? "blue" : "yellow"}
-          className={`flex items-center space-x-4 ${status === "Explorando" ? "animate-pulse" : ""}`}
-          icon={
-            status === "Explorado" ? (
-              <CheckIcon className="h-5 w-5 text-blue-400" />
-            ) : (
-              <PlanetIcon className="h-5 w-5 text-yellow-400" />
-            )
-          }
-        />
-      )}
+      <Link to={`/courses/${course.id}`} className="w-full">
+        <button className="w-full py-2 bg-indigo-600 text-white text-sm rounded-md hover:bg-indigo-500 transition">
+          Viajar para o Planeta
+        </button>
+      </Link>
     </div>
   );
 }
 
 // -----------------------------------------------------------------------------
-// CoursesPage
+// Página principal
 // -----------------------------------------------------------------------------
 export default function CoursesPage() {
   const [courses, setCourses] = useState([]);
@@ -105,7 +106,7 @@ export default function CoursesPage() {
         const { results } = await CourseService.listCourses();
         setCourses(results);
       } catch {
-        setError("Não foi possível carregar cursos.");
+        setError("Não foi possível carregar os cursos. Tente novamente.");
       } finally {
         setLoading(false);
       }
@@ -115,21 +116,24 @@ export default function CoursesPage() {
   if (loading) {
     return (
       <div className="flex justify-center items-center min-h-screen bg-black">
-        <Spinner className="h-12 w-12 text-red-500 animate-pulse" />
+        <Spinner className="h-12 w-12 text-indigo-500 animate-spin" />
       </div>
     );
   }
+
   if (error) {
     return (
       <div className="flex justify-center items-center min-h-screen bg-black">
-        <Alert color="red" className="text-center">{error}</Alert>
+        <Alert color="red" className="text-center">
+          {error}
+        </Alert>
       </div>
     );
   }
 
   return (
-    <div className="relative min-h-screen overflow-hidden">
-      {/* Vídeo de fundo em loop */}
+    <div className="relative min-h-screen overflow-hidden text-white">
+      {/* Fundo de estrelas */}
       <video
         src="/space-video.mp4"
         autoPlay
@@ -138,19 +142,15 @@ export default function CoursesPage() {
         playsInline
         className="absolute inset-0 w-full h-full object-cover"
       />
-      {/* Overlay para escurecer um pouco */}
-      <div className="absolute inset-0 bg-black/60" />
+      <div className="absolute inset-0 bg-black/80 backdrop-blur-sm" />
 
-      {/* Conteúdo */}
-      <div className="relative z-1 py-12 container mx-auto px-4">
-        <Typography
-          variant="h3"
-          className="mb-8 text-center font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-yellow-500 via-red-500 to-orange-500"
-        >
-          Aventure-se em novos planetas
-        </Typography>
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-12">
-          {courses.map(course => (
+      <div className="relative z-10 max-w-7xl mx-auto px-6 py-16">
+        <h1 className="text-center text-3xl sm:text-4xl md:text-5xl font-bold tracking-tight mb-14 text-transparent bg-clip-text bg-gradient-to-r from-indigo-400 via-purple-500 to-pink-500 drop-shadow-md">
+          Conheça os Planetas da V3L0Z Academy
+        </h1>
+
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-10">
+          {courses.map((course) => (
             <CourseCard key={course.id} course={course} />
           ))}
         </div>
