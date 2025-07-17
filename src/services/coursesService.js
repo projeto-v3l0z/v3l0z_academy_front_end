@@ -35,6 +35,11 @@ const CourseService = {
     return data;
   },
 
+  getCourseProgress: async (courseId) => {
+    const { data } = await apiClient.get(`/api/courses/${courseId}/progress/`);
+    return data;
+  },
+
 };
 
 export default CourseService;

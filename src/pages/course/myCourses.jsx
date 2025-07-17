@@ -117,7 +117,7 @@ export default function MyCoursesPage() {
   }
 
   return (
-    <div className="relative min-h-screen overflow-hidden text-white">
+    <div className="relative min-h-screen overflow-hidden text-white z-0">
       {/* Fundo de estrelas */}
       <video
         src="/space-video.mp4"

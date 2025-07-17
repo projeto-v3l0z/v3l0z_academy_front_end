@@ -44,7 +44,7 @@ export default function TrailsPage() {
 
   return (
     <div
-      className="relative bg-black min-h-screen py-12 bg-[url('/stars-bg.jpg')] bg-repeat"
+      className="relative bg-black min-h-screen py-12 bg-[url('/stars-bg.jpg')] bg-repeat z-0"
     >
       <div className="absolute inset-0 bg-black/75 z-0" />
       <div className="relative z-10 container mx-auto px-4">

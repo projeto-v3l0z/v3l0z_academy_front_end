@@ -10,9 +10,6 @@ import { Link } from "react-router-dom";
 import CourseService from "@/services/coursesService";
 import PlanetIcon from "@/components/ui/PlanetIcon";
 
-// -----------------------------------------------------------------------------
-// Card estilo Planeta
-// -----------------------------------------------------------------------------
 function CourseCard({ course }) {
   const [isEnrolled, setIsEnrolled] = useState(false);
   const [progress, setProgress] = useState(0);
@@ -23,6 +20,7 @@ function CourseCard({ course }) {
         const my = await CourseService.getMyCourses();
         const enrolled = my.some((uc) => uc.course.id === course.id);
         setIsEnrolled(enrolled);
+        console.log("CourseCard enrolled:", enrolled);
         if (enrolled) {
           const { progress_percentage } = await CourseService.getCourseProgress(course.id);
           setProgress(progress_percentage);
@@ -31,6 +29,7 @@ function CourseCard({ course }) {
     })();
   }, [course.id]);
 
+  console.log("CourseCard progress:", progress);
   const placeholder = "https://placehold.co/400x400?text=Planeta";
   const status = !isEnrolled
     ? null
@@ -132,7 +131,7 @@ export default function CoursesPage() {
   }
 
   return (
-    <div className="relative min-h-screen overflow-hidden text-white">
+    <div className="relative min-h-screen overflow-hidden text-white z-0">
       {/* Fundo de estrelas */}
       <video
         src="/space-video.mp4"

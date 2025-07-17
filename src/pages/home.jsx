@@ -21,7 +21,7 @@ export function Home() {
   return (
     <>
       {/* HERO SECTION */}
-      <div className="relative flex h-screen items-center justify-center overflow-hidden bg-black px-6 pt-16 pb-32">
+      <div className="relative flex h-screen items-center justify-center overflow-hidden bg-black px-6 pt-16 pb-32 z-0">
         {/* Fundo galáctico */}
         <div className="absolute inset-0 z-0 bg-[url('/stars-bg.jpg')] bg-cover bg-center brightness-50" />
         {/* Overlay escuro */}
